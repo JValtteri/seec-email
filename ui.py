@@ -69,20 +69,14 @@ class UI():
         pad_content_length = len(msg)+1
         PAD_TOP = HEADER_HEIGHT + TITLE_HEIGHT
         pad = curses.newpad(len(msg)+1, pad_width+1)
-        #self.scr.refresh()
-        pad.addstr(0, 0, "===============") ################
-        ###pad.addstr(pad_height-1, 0, "===============") ################
+        pad.addstr(0, 0, "="*pad_width) ## Add start line
         row = 1
-        #pad.getch() #############
         for line in msg:
-            #print(f"=={len(line)}==")
-            pad.getch() #############
             line_done = False
             while not line_done:
                 if len(line) > pad_width:
                     part_line = line[:pad_width]
                     line = line[pad_width:]
-                    #print(part_line) #######################
                     pad.addstr(row, 0, part_line)
                 else:
                     pad.addstr(row, 0, line)
@@ -90,29 +84,25 @@ class UI():
                 row += 1
                 pad.refresh(0, 0, PAD_TOP, 0, pad_height, pad_width)
                 if row >= pad_content_length-2:
-                    self.show_status_message(f"====resize {pad_content_length} -> ___ ===")
-                    old_length = pad_content_length
-                    #pad.getch()
-                    #pad.addstr(f"====resize {pad_height} ->")
                     pad_content_length += 10
                     pad.resize(pad_content_length, pad_width)
                     pad.refresh(0, 0, PAD_TOP, 0, pad_height, pad_width)
-                    #pad_addstr(f" {pad_height}====", end='')
-                    self.show_status_message(f"====resize {old_length} -> {pad_content_length} ===")
-            pad.getch()
-#            break
-
+        pad.addstr(row+1, 0, "="*pad_width)
         row = 0
         while True:
             pad.refresh(row, 0, PAD_TOP, 0, pad_height, pad_width)
             key = pad.getch()
-            if key == KEY_UP:
+            if key == KEY_UP and row > 0:
                 row -= 1
-            elif key == KEY_DOWN:
+            elif key == KEY_DOWN and row < pad_content_length-1:
                 row += 1
             elif key in KEY_Q:
                 break
             self.show_key(key)
+            if row == 1:
+                self.show_key("top")
+            if row == pad_content_length-2:
+                self.show_key("end")
 
     def show_status_message(self, msg):
         self.addstr_cntr(msg, env=self.foot)
@@ -120,7 +110,7 @@ class UI():
 
     def show_key(self, key):
         self.foot.clear()
-        if key in KEY_Q: #
+        if key in KEY_Q:
             self.foot.addstr(0,5, "QUIT", REVERSE)
         elif key == KEY_UP:
             self.foot.addstr(0,5, " UP ", REVERSE)
@@ -128,6 +118,10 @@ class UI():
             self.foot.addstr(0,5, "DOWN", REVERSE)
         else:
             self.foot.addstr(0,5, "    ", REVERSE)
+        if key == "end":
+            self.foot.addstr(0,5, "END ", REVERSE)
+        elif key == "top":
+            self.foot.addstr(0,5, "TOP ", REVERSE)
         self.foot.addstr(0,0,str(key))
         self.foot.refresh()
 
