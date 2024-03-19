@@ -4,7 +4,7 @@
 ## UI - SEEC UI Elements
 ## 13. Mar. 2024
 
-import curses, time
+import curses, textpad
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 
@@ -40,13 +40,16 @@ class UI():
 
         h = curses.LINES
         w = curses.COLS
-        self.h = h
-        self.w = w
+        self.screen_height = h
+        self.screen_width = w
 
         self.scr = scr                                  # Main screen
         self.title = curses.newwin( 1, w-1, 0, 0 )      # Title Window
         self.foot = curses.newwin( 1, w-1, h-1, 0 )     # Footer Window
         self.win = curses.newwin( h-1, w-1, 1, 1 )      # Content Window
+
+    def get_size(self):
+        return self.screen_width, self.screen_height
 
     def clear_scr():
         self.scr.clear()
@@ -55,7 +58,7 @@ class UI():
     def addstr_cntr(self, text, line=0, parm=0, env=None):
         if env == None:
             env = self.scr
-        x = int( self.w / 2 - len(text)/2 )
+        x = int( self.screen_width / 2 - len(text)/2 )
         env.addstr(line, x, text, parm)
 
     def show_title(self):
@@ -63,46 +66,8 @@ class UI():
         self.title.refresh()
 
     def show_message(self, msg):
-        PAD_TOP = HEADER_HEIGHT + TITLE_HEIGHT
-        pad_width = self.w-1
-        pad_height = self.h - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
-        pad_content_length = len(msg)+1
-        PAD_TOP = HEADER_HEIGHT + TITLE_HEIGHT
-        pad = curses.newpad(len(msg)+1, pad_width+1)
-        pad.addstr(0, 0, "="*pad_width) ## Add start line
-        row = 1
-        for line in msg:
-            line_done = False
-            while not line_done:
-                if len(line) > pad_width:
-                    part_line = line[:pad_width]
-                    line = line[pad_width:]
-                    pad.addstr(row, 0, part_line)
-                else:
-                    pad.addstr(row, 0, line)
-                    line_done = True
-                row += 1
-                pad.refresh(0, 0, PAD_TOP, 0, pad_height, pad_width)
-                if row >= pad_content_length-2:
-                    pad_content_length += 10
-                    pad.resize(pad_content_length, pad_width)
-                    pad.refresh(0, 0, PAD_TOP, 0, pad_height, pad_width)
-        pad.addstr(row+1, 0, "="*pad_width)
-        row = 0
-        while True:
-            pad.refresh(row, 0, PAD_TOP, 0, pad_height, pad_width)
-            key = pad.getch()
-            if key == KEY_UP and row > 0:
-                row -= 1
-            elif key == KEY_DOWN and row < pad_content_length-1:
-                row += 1
-            elif key in KEY_Q:
-                break
-            self.show_key(key)
-            if row == 1:
-                self.show_key("top")
-            if row == pad_content_length-2:
-                self.show_key("end")
+        pad = textpad.TextPad(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, self.screen_width, self.screen_height, len(examplemsg))
+        pad.show_message(msg)
 
     def show_status_message(self, msg):
         self.addstr_cntr(msg, env=self.foot)
@@ -126,9 +91,11 @@ class UI():
         self.foot.refresh()
 
 def main(scr):
-    ui=UI(scr)
+    ui  = UI(scr)
+    screen_width, screen_height = ui.get_size()
     ui.show_title()
     ui.show_message(examplemsg)
+
     #scr.getch()
 
 curses.wrapper(main)

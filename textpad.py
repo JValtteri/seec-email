@@ -1,0 +1,68 @@
+## SEEC - Secure Encrypted Email Client
+## Programming project for Secure Programming course at TUNI
+##
+## UI - SEEC UI Element: Textpad
+## Class for handling scrollable text in an email.
+## 19. Mar. 2024
+
+import curses
+
+KEY_UP = 65
+KEY_DOWN = 66
+KEY_Q = [113, 81]
+
+class TextPad():
+
+    def __init__(self, TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, screen_width, screen_height, len_msg):
+        self.pad_top = HEADER_HEIGHT + TITLE_HEIGHT
+        self.pad_width = screen_width-1
+        self.pad_height = screen_height - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
+        self.pad_content_length = len_msg+1
+        self.pad = curses.newpad(len_msg+1, self.pad_width+1)
+
+    def show_message(self, msg):
+        self.pad.addstr(0, 0, "="*self.pad_width) ## Add start line
+        row = self.print_message(msg)
+        self.pad.addstr(row+1, 0, "="*self.pad_width)
+        row = 0
+        go = True
+        while go:
+            go, row, status = self.scroll(row)
+            #self.show_key((key, status))
+
+    def print_message(self, msg):
+        row = 1
+        for line in msg:
+            line_done = False
+            while not line_done:
+                if len(line) > self.pad_width:
+                    part_line = line[:self.pad_width]
+                    line = line[self.pad_width:]
+                    self.pad.addstr(row, 0, part_line)
+                else:
+                    self.pad.addstr(row, 0, line)
+                    line_done = True
+                row += 1
+                self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+                if row >= self.pad_content_length-2:
+                    self.pad_content_length += 10
+                    self.pad.resize(self.pad_content_length, self.pad_width)
+                    self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+        return row
+
+    def scroll(self, row):
+        self.pad.refresh(row, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+        status = ""
+        key = self.pad.getch()
+        if key == KEY_UP and row > 0:
+            row -= 1
+        elif key == KEY_DOWN and row < self.pad_content_length-1:
+            row += 1
+        elif key in KEY_Q:
+            return False, row, status
+        if row == 1:
+            status = "top"
+        if row == self.pad_content_length-2:
+            status="end"
+        return True, row, status
+
