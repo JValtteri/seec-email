@@ -4,7 +4,7 @@
 ## UI - SEEC UI Elements
 ## 13. Mar. 2024
 
-import curses, textpad
+import curses, textpad, footer
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 
@@ -45,7 +45,8 @@ class UI():
 
         self.scr = scr                                  # Main screen
         self.title = curses.newwin( 1, w-1, 0, 0 )      # Title Window
-        self.foot = curses.newwin( 1, w-1, h-1, 0 )     # Footer Window
+        self.foot = footer.Footer(self.screen_width, self.screen_height)
+        # self.foot = curses.newwin( 1, w-1, h-1, 0 )     # Footer Window
         self.win = curses.newwin( h-1, w-1, 1, 1 )      # Content Window
 
     def get_size(self):
@@ -69,30 +70,8 @@ class UI():
         pad = textpad.TextPad(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, self.screen_width, self.screen_height, len(examplemsg))
         pad.show_message(msg)
 
-    def show_status_message(self, msg):
-        self.addstr_cntr(msg, env=self.foot)
-        self.foot.refresh()
-
-    def show_key(self, key):
-        self.foot.clear()
-        if key in KEY_Q:
-            self.foot.addstr(0,5, "QUIT", REVERSE)
-        elif key == KEY_UP:
-            self.foot.addstr(0,5, " UP ", REVERSE)
-        elif key == KEY_DOWN:
-            self.foot.addstr(0,5, "DOWN", REVERSE)
-        else:
-            self.foot.addstr(0,5, "    ", REVERSE)
-        if key == "end":
-            self.foot.addstr(0,5, "END ", REVERSE)
-        elif key == "top":
-            self.foot.addstr(0,5, "TOP ", REVERSE)
-        self.foot.addstr(0,0,str(key))
-        self.foot.refresh()
-
 def main(scr):
     ui  = UI(scr)
-    screen_width, screen_height = ui.get_size()
     ui.show_title()
     ui.show_message(examplemsg)
 

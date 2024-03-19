@@ -5,7 +5,7 @@
 ## Class for handling scrollable text in an email.
 ## 19. Mar. 2024
 
-import curses
+import curses, footer
 
 KEY_UP = 65
 KEY_DOWN = 66
@@ -15,10 +15,13 @@ class TextPad():
 
     def __init__(self, TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, screen_width, screen_height, len_msg):
         self.pad_top = HEADER_HEIGHT + TITLE_HEIGHT
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.pad_width = screen_width-1
         self.pad_height = screen_height - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
         self.pad_content_length = len_msg+1
         self.pad = curses.newpad(len_msg+1, self.pad_width+1)
+        self.foot = footer.Footer(self.screen_width, self.screen_height)
 
     def show_message(self, msg):
         self.pad.addstr(0, 0, "="*self.pad_width) ## Add start line
@@ -27,8 +30,8 @@ class TextPad():
         row = 0
         go = True
         while go:
-            go, row, status = self.scroll(row)
-            #self.show_key((key, status))
+            go, row, key, status = self.scroll(row)
+            self.foot.show_key((key, status))
 
     def print_message(self, msg):
         row = 1
@@ -56,13 +59,16 @@ class TextPad():
         key = self.pad.getch()
         if key == KEY_UP and row > 0:
             row -= 1
+            status = " UP "
         elif key == KEY_DOWN and row < self.pad_content_length-1:
             row += 1
+            status = "DOWN"
         elif key in KEY_Q:
-            return False, row, status
-        if row == 1:
-            status = "top"
-        if row == self.pad_content_length-2:
-            status="end"
-        return True, row, status
+            status = "QUIT"
+            return False, row, key, status
+        if row <= 1:
+            status = "TOP"
+        if row >= self.pad_content_length-2:
+            status="END"
+        return True, row, key, status
 
