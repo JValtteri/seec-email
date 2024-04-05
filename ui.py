@@ -1,3 +1,4 @@
+#!/usr/bin/python
 ## SEEC - Secure Encrypted Email Client
 ## Programming project for Secure Programming course at TUNI
 ##
