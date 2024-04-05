@@ -10,6 +10,9 @@ import curses
 class Header():
 
     def __init__(self, TITLE_HEIGHT, HEADER_HEIGHT, screen_width, screen_height):
+        # Colors
+        self.YELLOW = curses.color_pair(1)
+        self.RED = curses.color_pair(2)
 
         self.note = "<plaintext>"
         self.from_field = "from@mail.domain"
@@ -32,10 +35,10 @@ class Header():
     def render(self):
         reverse_indent = self.screen_width-self.indent-len(self.note)-9
         self._head.clear()
-        self._head.addstr(0, self.indent, "From:    "+self.from_field, 1)
-        self._head.addstr(1, self.indent, "To:      "+self.to_field, 1)
-        self._head.addstr(2, self.indent, "Subject: "+self.subject, 1)
-        self._head.addstr(1, reverse_indent, self.note, curses.A_BOLD)
+        self._head.addstr(0, self.indent, "From:    "+self.from_field, self.YELLOW)
+        self._head.addstr(1, self.indent, "To:      "+self.to_field, self.YELLOW)
+        self._head.addstr(2, self.indent, "Subject: "+self.subject, self.YELLOW)
+        self._head.addstr(1, reverse_indent, self.note, curses.A_BOLD | self.RED)
         self._head.refresh()
 
     def clear_all():
