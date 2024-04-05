@@ -5,7 +5,7 @@
 ## UI - SEEC UI Elements
 ## 13. Mar. 2024
 
-import curses, textpad, footer
+import curses, textpad, footer, header
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 
@@ -67,6 +67,11 @@ class UI():
         self.addstr_cntr(TITLE, parm= self.YELLOW | BOLD, env=self.title)
         self.title.refresh()
 
+    def show_header(self):
+        head = header.Header(TITLE_HEIGHT, HEADER_HEIGHT, self.screen_width, self.screen_height)
+        head.set_text()
+        head.render()
+
     def show_message(self, msg):
         pad = textpad.TextPad(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, self.screen_width, self.screen_height, len(examplemsg))
         pad.show_message(msg)
@@ -74,8 +79,10 @@ class UI():
 def main(scr):
     ui  = UI(scr)
     ui.show_title()
+    ui.show_header()
     ui.show_message(examplemsg)
 
-    #scr.getch()
+if __name__ == "__main__":
 
-curses.wrapper(main)
+    #scr.getch()
+    curses.wrapper(main)
