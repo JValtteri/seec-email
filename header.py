@@ -14,7 +14,7 @@ class Header():
         self.note = "<plaintext>"
         self.from_field = "from@mail.domain"
         self.to_field = "to@mail.domain"
-        self.subject = "<no subject>"
+        self.subject = " <no subject>"
         self.indent = 4
         self.screen_width = screen_width
         self._head = curses.newwin( HEADER_HEIGHT, screen_width-1, TITLE_HEIGHT, 0 )     # Footer Window
@@ -32,10 +32,10 @@ class Header():
     def render(self):
         reverse_indent = self.screen_width-self.indent-len(self.note)-9
         self._head.clear()
-        self._head.addstr(1, self.indent, "From: "+self.from_field, 1)
-        self._head.addstr(2, self.indent, "To: "+self.to_field, 1)
-        self._head.addstr(3, self.indent, "Subject: "+self.subject, 1)
-        self._head.addstr(1, reverse_indent, self.note, curses.A_REVERSE)
+        self._head.addstr(0, self.indent, "From:    "+self.from_field, 1)
+        self._head.addstr(1, self.indent, "To:      "+self.to_field, 1)
+        self._head.addstr(2, self.indent, "Subject: "+self.subject, 1)
+        self._head.addstr(1, reverse_indent, self.note, curses.A_BOLD)
         self._head.refresh()
 
     def clear_all():
