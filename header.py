@@ -30,15 +30,12 @@ class Header():
             self.note = note
 
     def render(self):
+        reverse_indent = self.screen_width-self.indent-len(self.note)-9
         self._head.clear()
         self._head.addstr(1, self.indent, "From: "+self.from_field, 1)
         self._head.addstr(2, self.indent, "To: "+self.to_field, 1)
         self._head.addstr(3, self.indent, "Subject: "+self.subject, 1)
-        self._head.addstr(1,
-            self.screen_width-self.indent-len(self.note),
-            "Subject: "+self.subject,
-            curses.A_REVERSE
-            )
+        self._head.addstr(1, reverse_indent, self.note, curses.A_REVERSE)
         self._head.refresh()
 
     def clear_all():
