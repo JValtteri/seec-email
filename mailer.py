@@ -13,8 +13,7 @@ from email.policy import default
 class Mailbox():
 
     def __init__(self, user, password):
-        self.M = __get_mailbox(user, password)
-
+        self.M, self.status_message = self.__get_mailbox(user, password)
 
     def get_header():
         headers = Parser(policy=default).parsestr(raw_message)
@@ -43,10 +42,13 @@ class Mailbox():
 
 
     def __get_mailbox(self, mail_user, mail_passwd) -> imaplib.IMAP4:
-        M = imaplib.IMAP4()
-        M.login(mail_user, mail_passwd)
-        M.select()
-        return M
+        try:
+            M = imaplib.IMAP4()
+            M.login(mail_user, mail_passwd)
+            M.select()
+            return M, "Logged in to mailbox"
+        except ConnectionRefusedError:
+            return None, "Error 111: Connection Refused"
 
 
     def get_mail():

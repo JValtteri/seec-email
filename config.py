@@ -75,8 +75,8 @@ class Config():
         self.__map_encrypt = ""
 
         # Outgoing
-        self.__smpt_addr    = self.__settings["smtp"]
-        self.__smpt_port    = self.__settings["smtp_port"]
-        self.__smpt_encrypt = ""
+        self.__smtp_addr    = self.__settings["smtp"]
+        self.__smtp_port    = self.__settings["smtp_port"]
+        self.__smtp_encrypt = ""
 
         print(f"{self.__settings['address']} -> {self.__address}")

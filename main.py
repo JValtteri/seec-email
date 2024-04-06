@@ -16,25 +16,23 @@ class ProgramState():
         self.mailbox = None
 
     def login_with(self, key):
-        settings = config.Config()
-        self.settings = settings
-
+        self.settings = config.Config()
         login = True
-
-        address = settings.get_address()
-        pw = settings.get_password()
-        maddr, mport = settings.get_map()
-        saddr, sport = settings.get_smtp()
-        print(f"Addr: {address}\npw: {pw}\nMAP: {maddr}, {mport}\nSMTP: {saddr}, {sport}")
-
+        address      = self.settings.get_address()
+        pw           = "*"*len(self.settings.get_password())
+        maddr, mport = self.settings.get_map()
+        saddr, sport = self.settings.get_smtp()
+        print(f"Addr:\t{address}\npw:\t{pw}\nMAP:\t{maddr},\t{mport}\nSMTP:\t{saddr},\t{sport}")
         return "No Security", b"", login
 
     def new_user(self, key):
         return "Not Implemented", b""
 
     def inbox(self):
-        self.mailbox = mailer.Mailbox(self.settings.get_address(), self.settings.get_password())
-        return "Inbox"
+        self.mailbox   = mailer.Mailbox(self.settings.get_address(), self.settings.get_password())
+        status_message = self.mailbox.status_message
+        print(self.mailbox.status_message)
+        return status_message
 
     def compose_mail(self):
         return "Not Implemented"
@@ -43,7 +41,7 @@ class ProgramState():
         return "Not Implemented"
 
 
-    def menu_logged_in(self, key=b"", status_message=""):
+    def menu_logged_in(self, key, status_message):
         go = True
         login = True
         print("\t0 - Show Inbox")
@@ -54,7 +52,7 @@ class ProgramState():
         selection = input("> ")
 
         if selection == "":
-            status_message = ""
+            status_message = "<nothing>"
         elif selection == "0":
             status_message = self.inbox()
         elif selection == "1":
@@ -68,7 +66,7 @@ class ProgramState():
         return go, key, login, status_message
 
 
-    def menu_logged_out(self, key, status_message=""):
+    def menu_logged_out(self, key, status_message):
         go = True
         login = False
         print("\t0 - Login")
@@ -78,7 +76,7 @@ class ProgramState():
         selection = input("> ")
 
         if selection == "":
-            status_message = ""
+            status_message = "<nothinng>"
 
         elif selection in ["q", "Q"]:
             go = False
@@ -97,7 +95,6 @@ class ProgramState():
             go, key, login, status_message = self.menu_logged_in(key, status_message)
         else:
             go, key, login, status_message = self.menu_logged_out(key, status_message)
-
         return go, key, status_message
 
 
