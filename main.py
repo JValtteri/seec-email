@@ -6,82 +6,99 @@
 ## 12. Mar. 2024
 
 import sys
-import config
+import config, mailer
 
-def login(key):
-    c = config.Config()
-    address = c.get_address()
-    pw = c.get_password()
-    maddr, mport = c.get_map()
-    saddr, sport = c.get_smtp()
-    print(f"Addr: {address}\npw: {pw}\nMAP: {maddr}, {mport}\nSMTP: {saddr}, {sport}")
-    return "Not Implemented", b""
+class ProgramState():
 
-def new_user(key):
-    return "Not Implemented", b""
+    def __init__(self):
+        self.login = False
+        self.settings = None
+        self.mailbox = None
 
-def inbox():
-    return "Not Implemented"
+    def login_with(self, key):
+        settings = config.Config()
+        self.settings = settings
 
-def compose_mail():
-    return "Not Implemented"
+        login = True
 
-def address_book():
-    return "Not Implemented"
+        address = settings.get_address()
+        pw = settings.get_password()
+        maddr, mport = settings.get_map()
+        saddr, sport = settings.get_smtp()
+        print(f"Addr: {address}\npw: {pw}\nMAP: {maddr}, {mport}\nSMTP: {saddr}, {sport}")
 
+        return "No Security", b"", login
 
-def menu_logged_in(key=b"", status_message=""):
-    go = True
-    print("\t0 - Show Inbox")
-    print("\t1 - Write Mail")
-    print("\t2 - Address Book")
-    print("\tQ - Exit Program")
-    selection = input("> ")
+    def new_user(self, key):
+        return "Not Implemented", b""
 
-    if selection == "":
-        status_message = ""
-    elif selection == "0":
-        status_message = inbox()
-    elif selection == "1":
-        status_message = compose_mail()
-    elif selection == "2":
-        status_message = address_book()
-    elif selection in ["q", "Q"]:
-        go = False
+    def inbox(self):
+        self.mailbox = mailer.Mailbox(self.settings.get_address(), self.settings.get_password())
+        return "Inbox"
 
-    return go, key, status_message
+    def compose_mail(self):
+        return "Not Implemented"
+
+    def address_book(self):
+        return "Not Implemented"
 
 
-def menu_logged_out(key, status_message=""):
-    go = True
-    print("\t0 - Login")
-    print("\t1 - New User")
-    print("\tQ - Exit Program")
-    print("\n" + status_message)
-    selection = input("> ")
+    def menu_logged_in(self, key=b"", status_message=""):
+        go = True
+        login = True
+        print("\t0 - Show Inbox")
+        print("\t1 - Write Mail")
+        print("\t2 - Address Book")
+        print("\tQ - Exit Program")
+        print(f"\n:: {status_message}")
+        selection = input("> ")
 
-    if selection == "":
-        status_message = ""
+        if selection == "":
+            status_message = ""
+        elif selection == "0":
+            status_message = self.inbox()
+        elif selection == "1":
+            status_message = self.compose_mail()
+        elif selection == "2":
+            status_message = self.address_book()
+        elif selection in ["q", "Q"]:
+            login = False
+            go = False
 
-    elif selection in ["q", "Q"]:
-        go = False
-
-    elif selection == "0":
-        status_message, key = login(key)
-
-    else:
-        status_message = f":: Woops, bad input: '{selection}'"
-    return go, key, status_message
+        return go, key, login, status_message
 
 
-def menu(key=b"", login=False, status_message=""):
-    print("\<<<<< SEEC - Secure Email Client >>>>>\n")
-    if login:
-        go, key, status_message = menu_logged_in(key, status_message)
-    else:
-        go, key, status_message = menu_logged_out(key, status_message)
+    def menu_logged_out(self, key, status_message=""):
+        go = True
+        login = False
+        print("\t0 - Login")
+        print("\t1 - New User")
+        print("\tQ - Exit Program")
+        print(f"\n:: {status_message}")
+        selection = input("> ")
 
-    return go, key, status_message
+        if selection == "":
+            status_message = ""
+
+        elif selection in ["q", "Q"]:
+            go = False
+
+        elif selection == "0":
+            status_message, key, login = self.login_with(key)
+
+        else:
+            status_message = f":: Woops, bad input: '{selection}'"
+        return go, key, login, status_message
+
+
+    def menu(self, key=b"", login=False, status_message=""):
+        print("\<<<<< SEEC - Secure Email Client >>>>>\n")
+        if login:
+            go, key, login, status_message = self.menu_logged_in(key, status_message)
+        else:
+            go, key, login, status_message = self.menu_logged_out(key, status_message)
+
+        return go, key, status_message
 
 
 def main():
@@ -90,12 +107,12 @@ def main():
     # Inbox
     # Read Mail
     #
-
+    p = ProgramState()
     go = True
     key = b""
     status_message = ""
     while go == True:
-        go, key, status_message = menu(key, status_message)
+        go, key, status_message = p.menu(key, status_message)
 
 
 if __name__ == "__main__":
