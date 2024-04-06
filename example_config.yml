@@ -1,0 +1,11 @@
+
+address: your@mail.com
+password: p4ssw0rd
+
+# Incoming
+map: map.domain.com
+map_port: 123
+
+# Outgoing
+smpt: smtp.domain.com
+smtp_port: 123
