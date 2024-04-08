@@ -29,9 +29,8 @@ class ProgramState():
         return "Not Implemented", b""
 
     def inbox(self):
-        self.mailbox   = mailer.Mailbox(self.settings.get_address(), self.settings.get_password())
+        self.mailbox   = mailer.Mailbox(self.settings)
         status_message = self.mailbox.status_message
-        print(self.mailbox.status_message)
         return status_message
 
     def compose_mail(self):
@@ -90,12 +89,14 @@ class ProgramState():
 
 
     def menu(self, key=b"", login=False, status_message=""):
-        print("\<<<<< SEEC - Secure Email Client >>>>>\n")
-        if login:
-            go, key, login, status_message = self.menu_logged_in(key, status_message)
-        else:
-            go, key, login, status_message = self.menu_logged_out(key, status_message)
-        return go, key, status_message
+        go = True
+        while go == True:
+            print("\<<<<< SEEC - Secure Email Client >>>>>\n")
+            if login:
+                go, key, login, status_message = self.menu_logged_in(key, status_message)
+            else:
+                go, key, login, status_message = self.menu_logged_out(key, status_message)
+        return status_message
 
 
 def main():
@@ -105,11 +106,8 @@ def main():
     # Read Mail
     #
     p = ProgramState()
-    go = True
-    key = b""
-    status_message = ""
-    while go == True:
-        go, key, status_message = p.menu(key, status_message)
+    status_message = p.menu()
+    print(f"\n:: {status_message}")
 
 
 if __name__ == "__main__":

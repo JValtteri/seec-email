@@ -12,8 +12,13 @@ from email.policy import default
 
 class Mailbox():
 
-    def __init__(self, user, password):
-        self.M, self.status_message = self.__get_mailbox(user, password)
+    def __init__(self, settings): #user, password):
+        self.settings = settings
+        self.status_message = "<uninitialized>"
+        self.M = self.__get_mailbox(
+            self.settings.get_address(),
+            self.settings.get_password()
+            )
 
     def get_header():
         headers = Parser(policy=default).parsestr(raw_message)
@@ -43,12 +48,21 @@ class Mailbox():
 
     def __get_mailbox(self, mail_user, mail_passwd) -> imaplib.IMAP4:
         try:
-            M = imaplib.IMAP4()
-            M.login(mail_user, mail_passwd)
+            # M = imaplib.IMAP4()
+            M = imaplib.IMAP4_SSL(
+                host=self.settings.get_map()[0],
+                port=self.settings.get_map()[1]
+                )
+            #M.set_debuglevel(1)                 # TODO DEBUG
+            M.login(user=mail_user, password=mail_passwd)
             M.select()
             return M, "Logged in to mailbox"
         except ConnectionRefusedError:
-            return None, "Error 111: Connection Refused"
+            self.status_message = "Error 111: Connection Refused"
+            return None
+        except imaplib.IMAP4.error:
+            self.status_message = "IMAP4 Error: email authentication failed"
+            return None
 
 
     def get_mail():
