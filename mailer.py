@@ -15,18 +15,10 @@ class Mailbox():
     def __init__(self, settings): #user, password):
         self.settings = settings
         self.status_message = "<uninitialized>"
-        self.M = self.__get_mailbox(
-            self.settings.get_address(),
-            self.settings.get_password()
-            )
+        self.M = self.__get_mailbox()
 
     def get_header():
         headers = Parser(policy=default).parsestr(raw_message)
-        # 'From: Foo Bar <user@example.com>\n'
-        # 'To: <someone_else@example.com>\n'
-        # 'Subject: Test message\n'
-        # '\n'
-        # 'Body would go here\n')
 
         print('To: {}'.format(headers['to']))
         print('From: {}'.format(headers['from']))
@@ -46,17 +38,21 @@ class Mailbox():
         return msg
 
 
-    def __get_mailbox(self, mail_user, mail_passwd) -> imaplib.IMAP4:
+    def __get_mailbox(self) -> imaplib.IMAP4:
         try:
-            # M = imaplib.IMAP4()
+            if not self.settings.get_map["security"]:
+                return None, "Security Error: Insecre IMAP4 not suupported"
             M = imaplib.IMAP4_SSL(
-                host=self.settings.get_map()[0],
-                port=self.settings.get_map()[1]
+                host=self.settings.get_map["addr"],
+                port=self.settings.get_map["port"]
                 )
-            #M.set_debuglevel(1)                 # TODO DEBUG
-            M.login(user=mail_user, password=mail_passwd)
+            M.login(
+                user=self.settings.get_address,
+                password=self.settings.get_password
+                )
             M.select()
-            return M, "Logged in to mailbox"
+            self.status_message = "Logged in to mailbox"
+            return M
         except ConnectionRefusedError:
             self.status_message = "Error 111: Connection Refused"
             return None
@@ -64,16 +60,16 @@ class Mailbox():
             self.status_message = "IMAP4 Error: email authentication failed"
             return None
 
-
-    def get_mail():
-        typ, data = self.M.search(None, 'ALL')
-        for num in data[0].split():
-            typ, data = M.fetch(num, '(RFC822)')
-            print(f'Message {num}\n{data[0][1]}\n')
+    def close_mailbox(self):
         self.M.close()
         self.M.logout()
-        return typ, data
 
+    def get_mail(self):
+        typ, data = self.M.search(None, 'ALL')
+        for num in data[0].split():
+            typ, data = self.M.fetch(num, '(RFC822)')
+            print(f'Message {num}\n{data[0][1]}\n')
+        return typ, data
 
     def send_mail() -> bool:
         fromaddr = prompt("From: ")

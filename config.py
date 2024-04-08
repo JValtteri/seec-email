@@ -21,12 +21,12 @@ class Config():
         # Incoming
         self.__map_addr = ""
         self.__map_port = None
-        self.__map_encrypt = ""
+        self.__map_security = False
 
         # Outgoing
         self.__smtp_addr = ""
         self.__smtp_port = None
-        self.__smtp_encrypt = ""
+        self.__smtp_security = False
 
         try:
             self.__settings = self.__read_config(filename)
@@ -36,18 +36,30 @@ class Config():
             print("Encountered a critical error while reading config.")
             raise
 
+    @property
     def get_password(self):
         # TODO Change this to return a hashed password
         return self.__password
 
+    @property
     def get_address(self):
         return self.__address
 
+    @property
     def get_map(self):
-        return (self.__map_addr, self.__map_port)
+        return {
+            "addr": self.__map_addr,
+            "port": self.__map_port,
+            "security": self.__map_security
+            }
 
+    @property
     def get_smtp(self):
-        return (self.__smtp_addr, self.__smtp_port)
+        return {
+            "addr": self.__smtp_addr,
+            "port": self.__smtp_port,
+            "security": self.__smtp_security
+            }
 
     def __read_config(self, filename):
         """
@@ -72,11 +84,11 @@ class Config():
         # Incoming
         self.__map_addr    = self.__settings["map"]
         self.__map_port    = self.__settings["map_port"]
-        self.__map_encrypt = ""
+        self.__map_security = self.__settings["map_security"]
 
         # Outgoing
         self.__smtp_addr    = self.__settings["smtp"]
         self.__smtp_port    = self.__settings["smtp_port"]
-        self.__smtp_encrypt = ""
+        self.__smtp_security = self.__settings["smtp_security"]
 
         print(f"{self.__settings['address']} -> {self.__address}")

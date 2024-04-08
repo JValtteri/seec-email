@@ -18,10 +18,10 @@ class ProgramState():
     def login_with(self, key):
         self.settings = config.Config()
         login = True
-        address      = self.settings.get_address()
-        pw           = "*"*len(self.settings.get_password())
-        maddr, mport = self.settings.get_map()
-        saddr, sport = self.settings.get_smtp()
+        address      = self.settings.get_address
+        pw           = "*"*len(self.settings.get_password)
+        maddr, mport, _ = self.settings.get_map
+        saddr, sport, _ = self.settings.get_smtp
         print(f"Addr:\t{address}\npw:\t{pw}\nMAP:\t{maddr},\t{mport}\nSMTP:\t{saddr},\t{sport}")
         return "No Security", b"", login
 
@@ -31,7 +31,12 @@ class ProgramState():
     def inbox(self):
         self.mailbox   = mailer.Mailbox(self.settings)
         status_message = self.mailbox.status_message
+        self.mailbox.get_mail()
         return status_message
+
+    def logout(self):
+        self.mailbox.close_mailbox()
+        return "Logged out"
 
     def compose_mail(self):
         return "Not Implemented"
@@ -51,7 +56,7 @@ class ProgramState():
         selection = input("> ")
 
         if selection == "":
-            status_message = "<nothing>"
+            status_message = ""
         elif selection == "0":
             status_message = self.inbox()
         elif selection == "1":
@@ -59,6 +64,7 @@ class ProgramState():
         elif selection == "2":
             status_message = self.address_book()
         elif selection in ["q", "Q"]:
+            status_message = self.logout()
             login = False
             go = False
 
@@ -75,7 +81,7 @@ class ProgramState():
         selection = input("> ")
 
         if selection == "":
-            status_message = "<nothinng>"
+            status_message = ""
 
         elif selection in ["q", "Q"]:
             go = False
@@ -93,7 +99,15 @@ class ProgramState():
         while go == True:
             print("\<<<<< SEEC - Secure Email Client >>>>>\n")
             if login:
-                go, key, login, status_message = self.menu_logged_in(key, status_message)
+                try:
+                    go, key, login, status_message = self.menu_logged_in(key, status_message)
+                except:
+                    try:
+                        status_message = self.logout()
+                    except imaplib.IMAP4.error:
+                        pass # If already logged out
+                    print(f"\n:: {status_message}")
+                    raise
             else:
                 go, key, login, status_message = self.menu_logged_out(key, status_message)
         return status_message
