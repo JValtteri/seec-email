@@ -26,6 +26,41 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 
 ## Usage
 
+### Setting up
+
+1. **Download the SEEC project or clone from GitHub**
+
+`https://github.com/JValtteri/seec-email.git`
+
+2. **Install requiremennts**
+
+`pip install -r requirements.txt`
+
+3. **Configure connfig.yml**
+
+Fill out according to your email providers instruuctions
+SEEC does not suupport insecuure connections. SSL encryption for
+both incominng and outgoing mail must be set to `true`.
+
+```yaml
+address: email@address.com
+password: p4ssp0rd
+
+# Incoming
+map: imap.address.com
+map_port: 993
+map_security: true
+
+# Outgoing
+smtp: smtp.address.com
+smtp_port: 587
+smtp_security: true
+```
+
+#### Note abot email providers support for standard email clients
+
+Google has [discontinued support](https://support.google.com/mail/answer/7126229?hl=en) for the stabard email authentication method, and instead requires the use of [OAuth 2.0 "Sign in with Google" API](https://developers.google.com/identity/protocols/oauth2). Since this is a not a ubiquitous way of authenticating  with email servers, it is outside the main scope of this projec.
+
 ### Inbox
 
 1. To unlock the client, the user must log in
