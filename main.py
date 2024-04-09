@@ -7,6 +7,7 @@
 
 import sys
 import config, mailer
+from imaplib import IMAP4
 
 class ProgramState():
 
@@ -30,8 +31,21 @@ class ProgramState():
 
     def inbox(self):
         self.mailbox   = mailer.Mailbox(self.settings)
-        status_message = self.mailbox.status_message
+        status_message = self.mailbox.status_message ## TODO HERE!!!
         self.mailbox.get_mail()
+        while True:
+            print(":: "+status_message)
+            selection = input("> ")
+            if selection in ['q', 'Q']:
+                break
+            else:
+                try:
+                    self.mailbox.open_message(int(selection))
+                except ValueError:
+                    status_message = "Invalid option"
+                except IndexError:
+                    status_message = "Out of range"
+
         return status_message
 
     def logout(self):
@@ -104,10 +118,9 @@ class ProgramState():
                 except:
                     try:
                         status_message = self.logout()
-                    except imaplib.IMAP4.error:
+                    except (IMAP4.error, IMAP4.abotr):
                         pass # If already logged out
                     print(f"\n:: {status_message}")
-                    raise
             else:
                 go, key, login, status_message = self.menu_logged_out(key, status_message)
         return status_message
