@@ -1,11 +1,13 @@
 
-address: your@mail.com
-password: p4ssw0rd
+address: email@address.com
+password: p4ssp0rd
 
 # Incoming
-map: map.domain.com
-map_port: 123
+map: imap.address.com
+map_port: 993
+map_security: true
 
 # Outgoing
-smpt: smtp.domain.com
-smtp_port: 123
+smtp: smtp.address.com
+smtp_port: 587
+smtp_security: true
