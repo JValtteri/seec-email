@@ -10,37 +10,70 @@ import config, mailer
 from imaplib import IMAP4
 
 class ProgramState():
+    '''
+    Maintains the main program state
+    '''
 
     def __init__(self):
-        self.login = False
+        self.login    = False
         self.settings = None
-        self.mailbox = None
+        self.mailbox  = None
 
     def login_with(self, key):
-        self.settings = config.Config()
+        '''
+        Logs in to each system
+        '''
+        # TODO: Main User login
         login = True
+        # TODO: Decrypt config
+        # Load config
+        self.settings = config.Config()
+        # Login to email server
+        status_message = self.__mail_login()
+        print(":: "+status_message)
+        return "No Encryption", b"", login
+
+    def __mail_login(self):
         address      = self.settings.get_address
         pw           = "*"*len(self.settings.get_password)
-        maddr, mport, _ = self.settings.get_map
-        saddr, sport, _ = self.settings.get_smtp
-        print(f"Addr:\t{address}\npw:\t{pw}\nMAP:\t{maddr},\t{mport}\nSMTP:\t{saddr},\t{sport}")
-        return "No Security", b"", login
+        imap         = self.settings.get_map
+        smtp         = self.settings.get_smtp
+        print(f"Addr:\t{address}\npw:\t{pw}\n")
+        print(f"IMAP:\t{imap['addr']},\t{imap['port']}")
+        print(f"SMTP:\t{smtp['addr']},\t{smtp['port']}")
+        self.mailbox   = mailer.Mailbox(self.settings)
+        status_message = self.mailbox.status_message ## TODO HERE!!!
+        return status_message
+
+    def __print_inbox(self):
+        index = 0
+        for mail in self.mailbox.inbox:
+            date, subject, from_addr, to_addr = self.mailbox.get_message_header(mail)
+            print(f"{index}:\t{date}\t\t{subject}\t\t{from_addr}")
+            index += 1
 
     def new_user(self, key):
         return "Not Implemented", b""
 
     def inbox(self):
-        self.mailbox   = mailer.Mailbox(self.settings)
-        status_message = self.mailbox.status_message ## TODO HERE!!!
-        self.mailbox.get_mail()
+        status_message = self.mailbox.update_inbox()
+        self.__print_inbox()
         while True:
             print(":: "+status_message)
             selection = input("> ")
             if selection in ['q', 'Q']:
+                status_message = "Exit"
                 break
+            elif selection == '':
+                status_message = ""
             else:
                 try:
-                    self.mailbox.open_message(int(selection))
+                    #self.mailbox.open_message(int(selection))
+                    message = self.mailbox.inbox[int(selection)]
+                    date, subj, fromwho, _ = self.mailbox.get_message_header(message)
+                    body = self.mailbox.get_message_body(message)
+                    print(f"{date}, {subj}, {fromwho}")
+                    print(body)
                 except ValueError:
                     status_message = "Invalid option"
                 except IndexError:
@@ -49,7 +82,7 @@ class ProgramState():
         return status_message
 
     def logout(self):
-        self.mailbox.close_mailbox()
+        self.mailbox.logout()
         return "Logged out"
 
     def compose_mail(self):
@@ -116,11 +149,9 @@ class ProgramState():
                 try:
                     go, key, login, status_message = self.menu_logged_in(key, status_message)
                 except:
-                    try:
-                        status_message = self.logout()
-                    except (IMAP4.error, IMAP4.abotr):
-                        pass # If already logged out
+                    status_message = self.logout()
                     print(f"\n:: {status_message}")
+                    raise   # for debug
             else:
                 go, key, login, status_message = self.menu_logged_out(key, status_message)
         return status_message

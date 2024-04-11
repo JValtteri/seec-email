@@ -6,51 +6,24 @@
 
 import imaplib
 import smtplib
-from email.message import EmailMessage
-from email.parser import Parser
-from email.policy import default
 import email
 
 class Mailbox():
+    '''
+    Object for handling mailbox data and connections
+    '''
 
-    def __init__(self, settings): #user, password):
+    def __init__(self, settings):
         self.settings = settings
         self.status_message = "<uninitialized>"
         self.M = self.__get_mailbox()
-        self.inbox = []
-
-    @staticmethod
-    def get_message(raw_message):
-        #headers = Parser(policy=default).parsebytes(raw_message)
-        message = email.message_from_bytes(raw_message)
-        # ['Return-Path', 'Delivered-To', 'Received', 'DKIM-Signature', 'X-Virus-Scanned', 'Received', 'Received', 'DKIM-Signature', 'MIME-Version', 'Date', 'Content-Type', 'Content-Transfer-Encoding', 'X-Mailer', 'From', 'Message-ID', 'Subject', 'To', 'X-Originating-IP']
-        #print('To: {}'.format(headers['to']))
-        #print('From: {}'.format(headers['from']))
-        #print('Subject: {}'.format(headers['subject']))
-        # You can also access the parts of the addresses:
-        #print('Recipient username: {}'.format(headers['to'].addresses[0].username))
-        #print('Sender name: {}'.format(headers['from'].addresses[0].display_name))
-        #return headers
-        date = message.get("Date")
-        subject = message.get("Received")
-        from_addr = message.get("From")
-        to_addr = message.get("To")
-        #body = message.get_body(preferencelist=('plain'))
-        body = message.get_payload()
-        return date, subject, from_addr, to_addr, body
-
-    def get_messages(self):
-        pass
-
-    def create_message(message_body, from_addr, to_addr) -> EmailMessage:
-        msg = EmailMessage()
-        msg.set_content(message_body)
-        msg['Subject'] = f'The contents of {textfile}'
-        msg['From'] = me
-        msg['To'] = you
-        return msg
+        self.__inbox = []
 
     def __get_mailbox(self) -> imaplib.IMAP4:
+        '''
+        Authenticate with IMAP server
+        Returns an IMAP4 object
+        '''
         try:
             if not self.settings.get_map["security"]:
                 return None, "Security Error: Insecre IMAP4 not suupported"
@@ -72,9 +45,79 @@ class Mailbox():
             self.status_message = "IMAP4 Error: email authentication failed"
             return None
 
-    def close_mailbox(self):
-        self.M.close()
-        self.M.logout()
+    @staticmethod
+    def __parse_message(raw_message):
+        '''
+        returns a message object from a raw message
+        '''
+        message = email.message_from_bytes(raw_message)
+        #message = email.parser.parsebytes(raw_message)
+        return message
+
+    def logout(self):
+        '''
+        CLose active IMAP server connection
+        '''
+        try:
+            self.M.close()
+            self.M.logout()
+        except (imaplib.IMAP4.error, imaplib.IMAP4.abort):
+            return "Is alredy logged out"
+        return "Logged out"
+
+    def update_inbox(self):
+        '''
+        Fetch messages from inbox
+        '''
+        typ, data = self.M.search(None, 'ALL')
+        self.__inbox = []
+        for num in data[0].split():
+            _, mail = self.M.fetch(num, '(RFC822)')
+            self.__inbox.append(Mailbox.__parse_message(mail[0][1]))
+        return "Fetched new messages"
+
+    @property
+    def inbox(self):
+        '''
+        Fetch messages from inbox
+        returns a list of raw messages
+        '''
+        return self.__inbox
+
+    @staticmethod
+    def get_message_header(message):
+        '''
+        Extracts header fields from a message object
+        '''
+        date = message.get("Date")
+        subject = message.get("Subject")
+        from_addr = message.get("From")
+        to_addr = message.get("To")
+        return date, subject, from_addr, to_addr
+
+    @staticmethod
+    def get_message_body(message):
+        '''
+        Extracts message body from a message object
+        '''
+        #body = message.get_body(('plain','html')) # (preferencelist=('plain'))
+        body = message.get_content()
+        if body:
+            body = message.get_content()
+        #body = message.get_payload()
+        return body
+
+
+    ### Refactored up to this point ###
+
+
+    def create_message(message_body, from_addr, to_addr): # -> email.EmailMessage:
+        msg = email.EmailMessage()
+        msg.set_content(message_body)
+        msg['Subject'] = f'The contents of {textfile}'
+        msg['From'] = me
+        msg['To'] = you
+        return msg
 
     def get_mail(self, message_no=None):
         typ, data = self.M.search(None, 'ALL')
@@ -83,19 +126,15 @@ class Mailbox():
         for num in data[0].split():
             _, mail = self.M.fetch(num, '(RFC822)')
             self.inbox.append(mail)
-            # print(f'Message {num}\n{data[0][1]}\n')
-            # print(f"Message {num}\nKeys: ")
             date, subject, from_addr, to_addr, body = Mailbox.get_message(mail[0][1]) # TODO decode
-
-            #print(f"{subject}\t{from_addr}\t{date}")
             print(f"#{num}.\t\t{from_addr}\t\t{date}")
         return self.inbox
 
-    def open_message(self, index=0):
+    def print_message(self, index=0):
         date, subject, from_addr, to_addr, body = Mailbox.get_message(self.inbox[index][0][1])
         print(f"\tFrom:\t{from_addr}\t\t{date}")
         print(f"Subject:\t{subject}")
-        print(f"{body}") # .decode("utf-8")
+        print(f"{body}".decode("utf-8"))
 
     def send_mail() -> bool:
         fromaddr = prompt("From: ")
