@@ -68,24 +68,31 @@ class UI():
         self.title.refresh()
 
     def show_header(self, from_field, to_field, subject, note):
-        head = header.Header(TITLE_HEIGHT, HEADER_HEIGHT, self.screen_width, self.screen_height)
+        head = header.Header(
+            TITLE_HEIGHT, HEADER_HEIGHT,
+            self.screen_width, self.screen_height
+            )
         head.set_text(from_field, to_field, subject, note)
         head.render()
 
     def show_message(self, msg):
-        pad = textpad.TextPad(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, self.screen_width, self.screen_height, len(examplemsg))
+        pad = textpad.TextPad(
+            TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
+            self.screen_width, self.screen_height, len(examplemsg)
+            )
         pad.show_message(msg)
 
-def __show_message(scr, from_field, to_field, subject, note):
+def __show_message(scr, message, from_field, to_field, subject, note):
     ui  = UI(scr)
     ui.show_title()
     ui.show_header(from_field, to_field, subject, note)
-    ui.show_message(examplemsg)
+    ui.show_message(message)
 
-def show_message(from_field=None, to_field=None, subject=None, note=None):
-    curses.wrapper(__show_message, from_field, to_field, subject, note)
+def show_message(message="<empty>", from_field=None,
+                 to_field=None, subject=None, note=None):
+    curses.wrapper(__show_message, message, from_field, to_field, subject, note)
 
 if __name__ == "__main__":
 
     #scr.getch()
-    show_message()
+    show_message(examplemsg)

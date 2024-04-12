@@ -5,6 +5,7 @@
 # Menu - Logged in
 # 12. Apr. 2024
 
+import ui
 
 def __print_inbox(state):
     index = 0
@@ -31,8 +32,16 @@ def inbox(state):
                 message = state.mailbox.inbox[int(selection)]
                 date, subj, fromwho, _ = state.mailbox.get_message_header(message)
                 body = state.mailbox.get_message_body(message)
-                print(f"{date}, {subj}, {fromwho}")
-                print(body)
+
+                ui.show_message(
+                    message=body,
+                    from_field=fromwho,
+                    subject=subj,
+                    note=" DEBUG "
+                    )
+
+                #print(f"{date}, {subj}, {fromwho}")
+                #print(body)
             except ValueError:
                 status_message = "Invalid option"
             except IndexError:
