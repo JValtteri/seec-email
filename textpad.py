@@ -25,15 +25,15 @@ class TextPad():
 
     def show_message(self, msg):
         self.pad.addstr(0, 0, "="*self.pad_width) ## Add start line
-        row = self.print_message(msg)
+        row = self.__print_message(msg)
         self.pad.addstr(row+1, 0, "="*self.pad_width)
         row = 0
         go = True
         while go:
-            go, row, key, status = self.scroll(row)
+            go, row, key, status = self.__scroll(row)
             self.foot.show_key((key, status))
 
-    def print_message(self, msg):
+    def __print_message(self, msg):
         row = 1
         for line in msg:
             line_done = False
@@ -53,7 +53,7 @@ class TextPad():
                     self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
         return row
 
-    def scroll(self, row):
+    def __scroll(self, row):
         self.pad.refresh(row, 0, self.pad_top, 0, self.pad_height, self.pad_width)
         status = ""
         key = self.pad.getch()
