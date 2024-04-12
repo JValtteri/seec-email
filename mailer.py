@@ -7,6 +7,8 @@
 import imaplib
 import smtplib
 import email
+import email.parser
+import email.policy
 
 class Mailbox():
     '''
@@ -50,8 +52,10 @@ class Mailbox():
         '''
         returns a message object from a raw message
         '''
-        message = email.message_from_bytes(raw_message)
-        #message = email.parser.parsebytes(raw_message)
+        message = email.parser.BytesParser(policy=email.policy.default).parsebytes(
+                raw_message,
+                headersonly=False
+                )
         return message
 
     def logout(self):
@@ -96,15 +100,13 @@ class Mailbox():
         return date, subject, from_addr, to_addr
 
     @staticmethod
-    def get_message_body(message):
+    def get_message_body(msg):
         '''
         Extracts message body from a message object
         '''
-        #body = message.get_body(('plain','html')) # (preferencelist=('plain'))
-        body = message.get_content()
-        if body:
-            body = message.get_content()
-        #body = message.get_payload()
+        body_blob = msg.get_body(preferencelist=('plain','html'))
+        if body_blob:
+            body = body_blob.get_content()
         return body
 
 
