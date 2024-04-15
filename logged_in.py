@@ -34,7 +34,7 @@ def inbox(state):
                 body = state.mailbox.get_message_body(message)
 
                 ui.show_message(
-                    message=body,
+                    message=body.splitlines(),
                     from_field=fromwho,
                     subject=subj,
                     note=" DEBUG "
