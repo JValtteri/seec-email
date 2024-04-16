@@ -9,6 +9,8 @@ import smtplib
 import email
 import email.parser
 import email.policy
+import datetime
+
 
 class Mailbox():
     '''
@@ -110,47 +112,46 @@ class Mailbox():
         return body
 
 
-    ### Refactored up to this point ###
+    @staticmethod
+    def __get_timestamp():
+        '''
+        Gets the current datetime and formats a standard timestamp
+        '''
+        # Date and Time
+        time_str = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
+        # Time Offset
+        timezone = datetime.datetime.now().astimezone()
+        timedelta_in_s = tzinfo.utcoffset(None).total_seconds()
+        timedelta_in_h = int( timedelta_in_s / 3600 * 100 )
+        if timedelta_in_h < 0:
+            sign = '-'
+        else:
+            sign = '+'
+        abs_delta = str(abs(timedelta_in_h))
+        zeros = '0' * ( 4-len(abs_delta) )
 
+        return f"{time_str} {sign}{zeros}{abs_delta}"
 
-    def create_message(message_body, from_addr, to_addr): # -> email.EmailMessage:
+    def create_message(message_body, from_addr, to_addr, subject="<no subject>"): # -> email.EmailMessage:
         msg = email.EmailMessage()
         msg.set_content(message_body)
-        msg['Subject'] = f'The contents of {textfile}'
+        msg['Subject'] = subject
         msg['From'] = me
         msg['To'] = you
         return msg
 
-    def get_mail(self, message_no=None):
-        typ, data = self.M.search(None, 'ALL')
-        print(f"Subject\t\tFrom\t\tDate")
-        self.inbox = []
-        for num in data[0].split():
-            _, mail = self.M.fetch(num, '(RFC822)')
-            self.inbox.append(mail)
-            date, subject, from_addr, to_addr, body = Mailbox.get_message(mail[0][1]) # TODO decode
-            print(f"#{num}.\t\t{from_addr}\t\t{date}")
-        return self.inbox
+    def send_mail() -> bool:
+        with smtplib.SMTP(smtp_addr, 587) as server:
+            server.starttls()
+            server.login(user, password)
+            server.send_message(msg)
 
     def print_message(self, index=0):
+        '''Print the message directly to standard output'''
         date, subject, from_addr, to_addr, body = Mailbox.get_message(self.inbox[index][0][1])
         print(f"\tFrom:\t{from_addr}\t\t{date}")
         print(f"Subject:\t{subject}")
         print(f"{body}".decode("utf-8"))
 
-    def send_mail() -> bool:
-        fromaddr = prompt("From: ")
-        toaddrs  = ", ".join(prompt("To: ").split())
-        print("Enter message, end with ^D (Unix) or ^Z (Windows):")
 
-        # Add the From: and To: headers at the start!
-        msg = (f"From: {fromaddr}\r\nTo: {toaddrs}\r\n\r\n")
-
-
-        print("Message length is", len(msg))
-
-        # Send the message via our own SMTP server.
-        s = smtplib.SMTP('localhost')
-        s.send_message(msg)
-        s.quit()
 
