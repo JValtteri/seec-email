@@ -51,7 +51,29 @@ def inbox(state):
 
 
 def compose_mail(state):
-    return "Not Implemented"
+    # Address
+    to_addr = input("To Address:\t")
+    # TODO: Option to use contacts
+    subject = input("Subject:\t")
+    # Start email editor
+    print("Write your Email. Press ENTER twice to send")
+    print("="*43)
+    lines = []
+    line = "<None>"
+    while line != "":
+        line = input("")
+        lines.append(line)
+    print("="*43)
+    message_body = "\n".join(lines)
+    from_addr = state.settings.get_address
+    # TODO Encrypt if public key available
+    # Create EmailMessage object
+    message = state.mailbox.create_message(message_body, from_addr, to_addr, subject)
+    # Send message
+    success = state.mailbox.send_mail(message)
+    if not success:
+        return "Sending failed"
+    return "Sent successfully"
 
 
 def address_book(state):

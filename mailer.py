@@ -9,6 +9,7 @@ import smtplib
 import email
 import email.parser
 import email.policy
+import email.message
 import datetime
 
 
@@ -111,7 +112,6 @@ class Mailbox():
             body = body_blob.get_content()
         return body
 
-
     @staticmethod
     def __get_timestamp():
         '''
@@ -121,7 +121,7 @@ class Mailbox():
         time_str = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
         # Time Offset
         timezone = datetime.datetime.now().astimezone()
-        timedelta_in_s = tzinfo.utcoffset(None).total_seconds()
+        timedelta_in_s = timezone.utcoffset().total_seconds()
         timedelta_in_h = int( timedelta_in_s / 3600 * 100 )
         if timedelta_in_h < 0:
             sign = '-'
@@ -129,29 +129,58 @@ class Mailbox():
             sign = '+'
         abs_delta = str(abs(timedelta_in_h))
         zeros = '0' * ( 4-len(abs_delta) )
-
         return f"{time_str} {sign}{zeros}{abs_delta}"
 
-    def create_message(message_body, from_addr, to_addr, subject="<no subject>"): # -> email.EmailMessage:
-        msg = email.EmailMessage()
-        msg.set_content(message_body)
+
+    def create_message(self, message_body, from_addr, to_addr, subject="<no subject>"): # -> email.EmailMessage:
+        '''Creates a EmailMessage object from the input'''
+        # TODO: 'self' not necessary, but I don't want to re-import
+        # the module again just to access this fuction as a static method #
+        msg = email.message.EmailMessage()
         msg['Subject'] = subject
-        msg['From'] = me
-        msg['To'] = you
+        msg['From'] = from_addr
+        msg['To'] = to_addr
+        #msg[ ] = cc_addr
+        #msg[ ] = bcc_addr
+        msg['Reply-To'] = from_addr
+        msg['Date'] = Mailbox.__get_timestamp()
+        msg['X-Mailer'] = 'SEEC - Secure Encrypted Email Client'
+        msg['MIME-Version'] = '1.0'
+        #msg['Importance'] = 'Normal'
+        #msg['Message-ID'] = 'message-id'
+        #msg['In-Reply-To'] = 'original-message-id'
+        #msg['References'] = 'original-message-id'
+        #msg['Content-Transfer-Encoding'] = 'quoted-printable'
+        msg['Content-Type'] = 'text/plain; charset=UTF-8'
+        msg.set_content(message_body)
         return msg
 
-    def send_mail() -> bool:
-        with smtplib.SMTP(smtp_addr, 587) as server:
-            server.starttls()
-            server.login(user, password)
-            server.send_message(msg)
+    def send_mail(self, msg) -> bool:
+        try:
+            smtp_addr = self.settings.get_smtp["addr"]
+            smtp_port = self.settings.get_smtp["port"]
+            with smtplib.SMTP(smtp_addr, smtp_port
+                ) as server:
+
+                server.starttls()
+                server.login(
+                    self.settings.get_address,
+                    self.settings.get_password
+                    )
+                server.send_message(msg)
+        except:
+            raise   # TODO DEBUG
+            return False
+        return True
 
     def print_message(self, index=0):
         '''Print the message directly to standard output'''
-        date, subject, from_addr, to_addr, body = Mailbox.get_message(self.inbox[index][0][1])
+        message = Mailbox.get_message(self.inbox[index][0][1])
+        date      = message[0]
+        subject   = message[1]
+        from_addr = message[2]
+        to_addr   = message[3]
+        body      = message[4]
         print(f"\tFrom:\t{from_addr}\t\t{date}")
         print(f"Subject:\t{subject}")
         print(f"{body}".decode("utf-8"))
-
-
-
