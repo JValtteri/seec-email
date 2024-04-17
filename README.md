@@ -34,7 +34,14 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 
 `https://github.com/JValtteri/seec-email.git`
 
-2. **Install requiremennts**
+2. **Requirements**
+
+ Requirements | version
+  ---- | :--:
+Python | >= 3.7
+pyyaml | >= 5.4
+
+**Install requirements**
 
 `pip install -r requirements.txt`
 
