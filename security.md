@@ -71,4 +71,31 @@ User misconfigures the program or forgets to enable security features
 - The email client enforces the use of PGP encryption.
 	- Emails can't be sent without a valid PGP key.
 
+## Secure Source Libraries
+
+#### Risk: Python
+
+~
+
+#### Mitigations
+
+Requiring `Python >= 3.7`. Many security and stability issues were fixed by 3.7.
+
+#### Risk: YAML
+
+Loading unsafe yaml files.
+
+#### Mitigations
+
+Using `yaml.safe_load()` to strip unsafe input
+Requiring `pyyaml` >= 5.4 to mitigate `CVE-2020-14343`
+
+#### Risk PGP impplementation
+
+~
+
+#### Mitigations
+
+~
+
 [EOF]
