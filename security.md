@@ -40,6 +40,7 @@ Adversary plants malware on computer and analyzes the RAM memory during the use 
 - Most of the sensitive processing will happen in imported libraries. Choosing ones with good implementation.
 - Using `ctypes` to sanitize memory on the main programs Python side.
 - Store actual in memory key hashed. Invalidate the hashed key, by re-salting the key file after session.
+- *"if your memory is constantly being compromised, I would re-think your security setup."*
 
 ## Leak from email provider
 
@@ -92,7 +93,8 @@ Requiring `pyyaml` >= 5.4 to mitigate `CVE-2020-14343`
 
 #### Risk PGP impplementation
 
-~
+
+https://wiki.python.org/moin/GnuPrivacyGuard
 
 #### Mitigations
 
