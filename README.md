@@ -68,7 +68,7 @@ smtp_security: true
 
 #### Note abot email providers support for standard email clients
 
-Google has [discontinued support](https://support.google.com/mail/answer/7126229?hl=en) for the stabard email authentication method, and instead requires the use of [OAuth 2.0 "Sign in with Google" API](https://developers.google.com/identity/protocols/oauth2). Since this is a not a ubiquitous way of authenticating  with email servers, it is outside the main scope of this projec.
+Google has [discontinued support](https://support.google.com/mail/answer/7126229?hl=en) for the stabard email authentication method, and instead requires the use of [OAuth 2.0 "Sign in with Google" API](https://developers.google.com/identity/protocols/oauth2). Since this is a not yet a ubiquitous way of authenticating  with email servers, it is outside the main scope of this projec.
 
 ### Inbox
 
