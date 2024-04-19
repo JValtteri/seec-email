@@ -142,7 +142,7 @@ class Mailbox():
         msg['To'] = to_addr
         #msg[ ] = cc_addr
         #msg[ ] = bcc_addr
-        msg['Reply-To'] = from_addr
+        #msg['Reply-To'] = from_addr
         msg['Date'] = Mailbox.__get_timestamp()
         msg['X-Mailer'] = 'SEEC - Secure Encrypted Email Client'
         msg['MIME-Version'] = '1.0'
