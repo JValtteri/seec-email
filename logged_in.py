@@ -5,7 +5,7 @@
 # Menu - Logged in
 # 12. Apr. 2024
 
-import ui
+import ui, contacts
 
 def __print_inbox(state):
     index = 0
@@ -50,9 +50,10 @@ def inbox(state):
     return status_message
 
 
-def compose_mail(state):
+def compose_mail(state, to_addr=None):
     # Address
-    to_addr = input("To Address:\t")
+    if not to_addr:
+        to_addr = input("To Address:\t")
     # TODO: Option to use contacts
     subject = input("Subject:\t")
     # Start email editor
@@ -64,6 +65,7 @@ def compose_mail(state):
         line = input("")
         lines.append(line)
     print("="*43)
+    print(":: Sending...")
     message_body = "\n".join(lines)
     from_addr = state.settings.get_address
     # TODO Encrypt if public key available
@@ -75,10 +77,37 @@ def compose_mail(state):
         return "Sending failed"
     return "Sent successfully"
 
+def __add_contact(A):
+    print("Add Contact")
+    name = input("Name: ")
+    address = input("Address: ")
+    A.add_address(name, address)
 
 def address_book(state):
-    return "Not Implemented"
-
+    A = contacts.AddressBook()
+    status_message = ""
+    while True:
+        print("Contacts:")
+        A.print_contacts()
+        print("\nChoose a contact by typing its number")
+        print("a = Add contact")
+        print("q = Quit")
+        print(f":: {status_message}")
+        selection = input("> ")
+        if selection == "":
+            status_message = ""
+        elif selection == "a":
+            __add_contact(A)
+        elif selection == "q":
+            break
+        else:
+            try:
+                contact = A.get_address(int(selection))
+            except TypeError:
+                status_message = "Not a number"
+                raise # TODO DEBUG
+            else:
+                compose_mail(state, contact['addr'])
 
 def menu(state, key, status_message):
     go = True
