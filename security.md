@@ -100,4 +100,16 @@ https://wiki.python.org/moin/GnuPrivacyGuard
 
 ~
 
+## Injections
+
+#### Scenario: Malicious injection in to input fields
+
+#### Mitigations
+
+##### Input sanitazion
+
+The library `pyyaml` library used to store configurations and contacts, handles inputs well and prevents malicious injections, both while writing and while reading yaml. Also see [Risk: YAML](#Risk:_YAML) for further info on yaml security.
+
+The `input()` funtion prevents code injection.
+
 [EOF]
