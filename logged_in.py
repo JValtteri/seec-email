@@ -5,7 +5,8 @@
 # Menu - Logged in
 # 12. Apr. 2024
 
-import ui, contacts
+import getpass
+import ui, contacts, seecrypto
 
 def __print_inbox(state):
     index = 0
@@ -33,12 +34,21 @@ def inbox(state):
                 date, subj, fromwho, _ = state.mailbox.get_message_header(message)
                 body = state.mailbox.get_message_body(message)
 
-                ui.show_message(
+                key = ui.show_message(
                     message=body.splitlines(),
                     from_field=fromwho,
                     subject=subj,
                     note=" DEBUG "
                     )
+                if key in ui.KEY_D:
+                    password = getpass.getpass("Password: ")
+                    decrypted_body = seecrypto.GPG().decrypt_with_key(body, password)
+                    key = ui.show_message(
+                        message=decrypted_body.splitlines(),
+                        from_field=fromwho,
+                        subject=subj,
+                        note="Decrypted"
+                        )
 
                 #print(f"{date}, {subj}, {fromwho}")
                 #print(body)
@@ -50,7 +60,7 @@ def inbox(state):
     return status_message
 
 
-def compose_mail(state, to_addr=None):
+def compose_mail(state, to_addr=None, encrypt=False):
     # Address
     if not to_addr:
         to_addr = input("To Address:\t")
@@ -65,13 +75,16 @@ def compose_mail(state, to_addr=None):
         line = input("")
         lines.append(line)
     print("="*43)
-    print(":: Sending...")
     message_body = "\n".join(lines)
     from_addr = state.settings.get_address
     # TODO Encrypt if public key available
+    if encrypt:
+        message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
+        print(f":: {status_message}")
     # Create EmailMessage object
     message = state.mailbox.create_message(message_body, from_addr, to_addr, subject)
     # Send message
+    print(":: Sending...")
     success = state.mailbox.send_mail(message)
     if not success:
         return "Sending failed"
@@ -87,6 +100,7 @@ def address_book(state):
     A = contacts.AddressBook()
     status_message = ""
     while True:
+        encrypt = False
         print("Contacts:")
         A.print_contacts()
         print("\nChoose a contact by typing its number")
@@ -107,7 +121,11 @@ def address_book(state):
                 status_message = "Not a number"
                 raise # TODO DEBUG
             else:
-                compose_mail(state, contact['addr'])
+                selection = input("Encrypt (Y/n)\n> ")
+                if selection != 'n':
+                    encrypt = True
+                compose_mail(state, contact['addr'], encrypt)
+                break
 
 def menu(state, key, status_message):
     go = True

@@ -93,16 +93,17 @@ class GPG():
         """
         pgp_obj = self.gpg.encrypt(data, recipient, always_trust=True)
         status_message = "Message encrypted"
-        if pgp_obj.ok == False:
+        if pgp_obj.status != 'encryption ok':
             status_message = f"Encryption failed: {pgp_obj.status}"
-        data = pgp_obj.data
+        data = pgp_obj.data.decode(self.encoding)
         return data, status_message
 
     def decrypt_with_key(self, message, password):
         """
         Decrypts the [message] with the private key
         """
-        return self.gpg.decrypt(message)
+        pgp_obj = self.gpg.decrypt(message, passphrase=password, always_trust=True)
+        return pgp_obj.data, pgp_obj.status
 
     def import_public_key(self, key_data):
         """

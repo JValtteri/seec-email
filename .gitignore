@@ -4,9 +4,10 @@ lorem_ipsum.py
 config.yml
 contacts.txt
 contacts.yml
-# Key files
+# PGP files
 *.gpg
 *.pgp
 *.pkr
 *~
 *.d
+random_seed
