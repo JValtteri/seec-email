@@ -42,6 +42,7 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
   ---- | :--:
 Python | >= 3.7
 pyyaml | >= 5.4
+python-gnupg | >= 0.5.2
 
 **Install requirements**
 
