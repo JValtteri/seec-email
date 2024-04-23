@@ -5,7 +5,8 @@
 # Menu - Logged out
 # 12. Apr. 2024
 
-import config
+import getpass
+import config, seecrypto
 
 
 def login_with(state, key):
@@ -27,7 +28,21 @@ def login_with(state, key):
     return "No Encryption", b"", login
 
 def new_user(state, key):
-    return "Not Implemented", b""
+    print("New User")
+    name = input("Name: ")
+    passwd_0 = getpass.getpass("       Password: ")
+    passwd_1 = getpass.getpass("Retype Password: ")
+    if passwd_0 != passwd_1:
+        status_message = ":: Passwords didn't match"
+        return status_message, b''
+    # Salt and Hash the password
+    # (Set and) Encrypt config
+    # Generate PGP key
+    gpg = seecrypto.GPG()
+    status_message = f":: Password set for: {name}"
+    email = input("Email address: ")
+    status_message = gpg.generate_key_pair(name, email, password=passwd_0)
+    return status_message, b'no key'
 
 def menu(state, key, status_message):
     go = True
@@ -46,6 +61,8 @@ def menu(state, key, status_message):
 
     elif selection == "0":
         status_message, key, login = login_with(state, key)
+    elif selection == "1":
+        status_message, key = new_user(state, key)
 
     else:
         status_message = f":: Woops, bad input: '{selection}'"
