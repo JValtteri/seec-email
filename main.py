@@ -5,6 +5,7 @@
 # Main program
 # 12. Mar. 2024
 
+import sys
 import state as s
 import menu_main
 
