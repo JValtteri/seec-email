@@ -9,7 +9,7 @@ Created as a course project submission for Tampere University **Secure Programmi
 
 ##### Disclaimer!
 
-**This project is very much a incomplete.**
+**This project is very much a work in progress.**
 
 This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Though I've made every effort to follow secure programming best practices, the software has not been audited by a professional entity, so the real world security has not been verified. Also, this client is incredibly bare-bones. You'd likely not get much use of it anyways.
 
