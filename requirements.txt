@@ -1,2 +1,2 @@
 pyyaml >= 5.4
-gnupg >= 0.5.2
+python-gnupg >= 0.5.2
