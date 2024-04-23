@@ -10,6 +10,7 @@ import curses, footer
 KEY_UP = 65
 KEY_DOWN = 66
 KEY_Q = [113, 81]
+KEY_D = []
 
 class TextPad():
 
@@ -32,6 +33,7 @@ class TextPad():
         while go:
             go, row, key, status = self.__scroll(row)
             self.foot.show_key((key, status))
+        return key
 
     def __print_message(self, msg):
         row = 1
@@ -65,6 +67,9 @@ class TextPad():
             status = "DOWN"
         elif key in KEY_Q:
             status = "QUIT"
+            return False, row, key, status
+        elif key in KEY_D:
+            status = "DECR"
             return False, row, key, status
         if row <= 1:
             status = "TOP"

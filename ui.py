@@ -12,6 +12,7 @@ TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 KEY_UP = 65
 KEY_DOWN = 66
 KEY_Q = [113, 81]
+KEY_D = []
 
 BOLD = curses.A_BOLD
 REVERSE = curses.A_REVERSE
@@ -80,7 +81,9 @@ class UI():
             TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
             self.screen_width, self.screen_height, len(examplemsg)
             )
-        pad.show_message(msg)
+        key = pad.show_message(msg)
+        return key
+
 
 def __show_message(scr, message, from_field, to_field, subject, note):
     ui  = UI(scr)
