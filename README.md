@@ -7,9 +7,12 @@ Created as a course project submission for Tampere University **Secure Programmi
 
 ### Note on Security
 
-##### Disclaimer!
+#### Disclaimer!
 
-**This project is very much a work in progress.**
+```diff
+- This project is very much a work in progress!
+- All basic security features are not yet complete!
+```
 
 This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Though I've made every effort to follow secure programming best practices, the software has not been audited by a professional entity, so the real world security has not been verified. Also, this client is incredibly bare-bones. You'd likely not get much use of it anyways.
 
@@ -21,12 +24,16 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 
 ## Features
 
-- Client log in
-	- Asymmetric Encryption
-	- Keys stored securely
-- SSL connection to SMTP mail server
-- Send and Receive emails
-- Browse messages without downloading
+- [ ] Client log in
+	- [ ] Asymmetric Encryption
+	- [x] Keys stored securely
+- [x] SSL connection to SMTP mail server
+- [x] Send and Receive emails
+- [ ] Browse messages without downloading
+- [x] Generating PGP keys pairs
+- [x] Encrypting messages
+- [ ] Decrypting messages
+- [ ] Encrypting/Decrypting email credintials
 
 ## Usage
 
