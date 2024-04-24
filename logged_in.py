@@ -1,9 +1,10 @@
 #!/usr/bin/python
-# SEEC - Secure Encrypted Email Client
-# Programming project for Secure Programming course at TUNI
-#
-# Menu - Logged in
-# 12. Apr. 2024
+# -*- coding: utf-8 -*-
+## SEEC - Secure Encrypted Email Client
+## Programming project for Secure Programming course at TUNI
+##
+## Menu - Logged in
+## 12. Apr. 2024
 
 import getpass
 import ui, contacts, seecrypto

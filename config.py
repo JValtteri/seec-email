@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Programming project for Secure Programming course at TUNI
-#
-# UI - SEEC Config
-# Class for readinng and storing configurations
-# 6. Apr. 2024
+## Programming project for Secure Programming course at TUNI
+##
+## UI - SEEC Config
+## Class for readinng and storing configurations
+## 6. Apr. 2024
 
 import yaml, sys
 
@@ -91,4 +91,3 @@ class Config():
         self.__smtp_port    = self.__settings["smtp_port"]
         self.__smtp_security = self.__settings["smtp_security"]
 
-        print(f"{self.__settings['address']} -> {self.__address}")
