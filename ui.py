@@ -13,7 +13,7 @@ TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 KEY_UP = 65
 KEY_DOWN = 66
 KEY_Q = [113, 81]
-KEY_D = []
+KEY_D = [100, 68]
 
 BOLD = curses.A_BOLD
 REVERSE = curses.A_REVERSE

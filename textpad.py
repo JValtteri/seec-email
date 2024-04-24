@@ -12,7 +12,7 @@ import curses, footer
 KEY_UP = 65
 KEY_DOWN = 66
 KEY_Q = [113, 81]
-KEY_D = []
+KEY_D = [100, 68]
 
 class TextPad():
 
