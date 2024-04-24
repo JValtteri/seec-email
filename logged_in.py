@@ -50,9 +50,7 @@ def inbox(state):
                         subject=subj,
                         note="Decrypted"
                         )
-
-                #print(f"{date}, {subj}, {fromwho}")
-                #print(body)
+                break
             except ValueError:
                 status_message = "Invalid option"
             except IndexError:
@@ -77,7 +75,7 @@ def compose_mail(state, to_addr=None, encrypt=False):
         lines.append(line)
     print("="*43)
     message_body = "\n".join(lines)
-    from_addr = state.settings.get_address
+    from_addr = state.address
     # TODO Encrypt if public key available
     if encrypt:
         message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
@@ -128,7 +126,7 @@ def address_book(state):
                 compose_mail(state, contact['addr'], encrypt)
                 break
 
-def menu(state, key, status_message):
+def menu(state, status_message):
     go = True
     login = True
     print("\t0 - Show Inbox")
@@ -148,9 +146,8 @@ def menu(state, key, status_message):
         status_message = address_book(state)
     elif selection in ["q", "Q"]:
         status_message = state.logout()
-        login = False
         go = False
 
-    return go, key, login, status_message
+    return go, status_message
 
 

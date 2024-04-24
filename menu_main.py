@@ -7,18 +7,18 @@
 
 import logged_in, logged_out
 
-def menu(state, key=b"", login=False, status_message=""):
+def menu(state, key=b"", status_message=""):
     go = True
     while go == True:
         print("\<<<<< SEEC - Secure Email Client >>>>>\n")
-        if login:
+        if state.logged_in:
             try:
-                go, key, login, status_message = logged_in.menu(state, key, status_message)
+                go, status_message = logged_in.menu(state, status_message)
             except:
                 status_message = state.logout()
                 print(f"\n:: {status_message}")
                 raise   # for debug
         else:
-            go, key, login, status_message = logged_out.menu(state, key, status_message)
+            go, status_message = logged_out.menu(state, status_message)
     return status_message
 

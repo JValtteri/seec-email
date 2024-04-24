@@ -12,7 +12,7 @@ import menu_main
 
 
 def main():
-    state             = s.ProgramState()
+    state          = s.ProgramState()
     status_message = menu_main.menu(state)
     print(f"\n:: {status_message}")
 
@@ -24,5 +24,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         sys.exit("\nCtrl + C was pressed. Terminating")
     except:
-         sys.exit("Error: Program terminated unexpectedly")
-         raise      # TODO DEBUG
+        print("Error: Program terminated unexpectedly")
+        raise      # TODO DEBUG
+        sys.exit("Error: Program terminated unexpectedly")

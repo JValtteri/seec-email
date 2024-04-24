@@ -7,28 +7,23 @@
 ## 12. Apr. 2024
 
 import getpass
-import config, seecrypto
+import seecrypto
 
 
-def login_with(state, key):
+def login_with(state, passwd):
     '''
     Logs in to each system
     '''
-    # TODO: Main User login
-    login = True
-
-    # TODO: Decrypt config
-
-    # Load config
-    state.settings  = config.Config()
+    # Loads config
+    state.login(passwd)
 
     # Login to email server
     status_message = state.mail_login()
 
     print(":: "+status_message)
-    return "No Encryption", b"", login
+    return "No Encryption", b""
 
-def new_user(state, key):
+def new_user(state):
     print("New User")
     name = input("Name: ")
     passwd_0 = getpass.getpass("       Password: ")
@@ -43,11 +38,10 @@ def new_user(state, key):
     status_message = f":: Password set for: {name}"
     email = input("Email address: ")
     status_message = gpg.generate_key_pair(name, email, password=passwd_0)
-    return status_message, b'no key'
+    return status_message
 
-def menu(state, key, status_message):
+def menu(state, status_message):
     go = True
-    login = False
     print("\t0 - Login")
     print("\t1 - New User")
     print("\tQ - Exit Program")
@@ -59,12 +53,11 @@ def menu(state, key, status_message):
 
     elif selection in ["q", "Q"]:
         go = False
-
     elif selection == "0":
-        status_message, key, login = login_with(state, key)
+        passwd = getpass.getpass("password: ")
+        status_message = login_with(state, passwd)
     elif selection == "1":
-        status_message, key = new_user(state, key)
-
+        status_message = new_user(state)
     else:
         status_message = f":: Woops, bad input: '{selection}'"
-    return go, key, login, status_message
+    return go, status_message
