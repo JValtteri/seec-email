@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 ## SEEC - Secure Encrypted Email Client
 ## Programming project for Secure Programming course at TUNI
 ##
@@ -31,7 +33,8 @@ class Mailbox():
         '''
         try:
             if not self.settings.get_map["security"]:
-                return None, "Security Error: Insecre IMAP4 not suupported"
+                self.status_message = "Security Error: Insecre IMAP4 not suupported"
+                return None
             M = imaplib.IMAP4_SSL(
                 host=self.settings.get_map["addr"],
                 port=self.settings.get_map["port"]
@@ -51,7 +54,7 @@ class Mailbox():
             return None
 
     @staticmethod
-    def __parse_message(raw_message):
+    def __parse_message(raw_message) -> email.message.EmailMessage:
         '''
         returns a message object from a raw message
         '''
@@ -61,7 +64,7 @@ class Mailbox():
                 )
         return message
 
-    def logout(self):
+    def logout(self) -> str:
         '''
         CLose active IMAP server connection
         '''
@@ -72,7 +75,7 @@ class Mailbox():
             return "Is alredy logged out"
         return "Logged out"
 
-    def update_inbox(self):
+    def update_inbox(self) -> str:
         '''
         Fetch messages from inbox
         '''
@@ -84,7 +87,7 @@ class Mailbox():
         return "Fetched new messages"
 
     @property
-    def inbox(self):
+    def inbox(self) -> [email.message.EmailMessage]:
         '''
         Fetch messages from inbox
         returns a list of raw messages
@@ -92,7 +95,7 @@ class Mailbox():
         return self.__inbox
 
     @staticmethod
-    def get_message_header(message):
+    def get_message_header(message) -> (str, str, str, str):
         '''
         Extracts header fields from a message object
         '''
@@ -103,7 +106,7 @@ class Mailbox():
         return date, subject, from_addr, to_addr
 
     @staticmethod
-    def get_message_body(msg):
+    def get_message_body(msg) -> str:
         '''
         Extracts message body from a message object
         '''
@@ -113,7 +116,7 @@ class Mailbox():
         return body
 
     @staticmethod
-    def __get_timestamp():
+    def __get_timestamp() -> str:
         '''
         Gets the current datetime and formats a standard timestamp
         '''
@@ -132,7 +135,7 @@ class Mailbox():
         return f"{time_str} {sign}{zeros}{abs_delta}"
 
 
-    def create_message(self, message_body, from_addr, to_addr, subject="<no subject>"): # -> email.EmailMessage:
+    def create_message(self, message_body, from_addr, to_addr, subject="<no subject>") -> email.message.EmailMessage:
         '''Creates a EmailMessage object from the input'''
         # TODO: 'self' not necessary, but I don't want to re-import
         # the module again just to access this fuction as a static method #
@@ -173,7 +176,7 @@ class Mailbox():
             return False
         return True
 
-    def print_message(self, index=0):
+    def print_message(self, index=0) -> None:
         '''Print the message directly to standard output'''
         message = Mailbox.get_message(self.inbox[index][0][1])
         date      = message[0]
