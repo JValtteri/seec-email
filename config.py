@@ -6,14 +6,14 @@
 ## Class for readinng and storing configurations
 ## 6. Apr. 2024
 
-import yaml, sys
+import yaml, sys, seecrypto
 
 class ConfigurationError(Exception):
     """Exception raised for errors in the configuration."""
 
 class Config():
 
-    def __init__(self, filename="config.yml"):
+    def __init__(self, filename="config.yml", password=None):
 
         self.__address = ""
         self.__password = ""
@@ -29,12 +29,12 @@ class Config():
         self.__smtp_security = False
 
         try:
-            self.__settings = self.__read_config(filename)
+            self.__settings = self.__read_config(filename, password)
             self.__parse_settings()
             self.__settings = {}    # Empty the __settings dict
         except:
             print("Encountered a critical error while reading config.")
-            raise
+            raise   # TODO DEBUG
 
     @property
     def get_password(self):
@@ -61,14 +61,19 @@ class Config():
             "security": self.__smtp_security
             }
 
-    def __read_config(self, filename):
+    def __read_config(self, filename, password=None):
         """
         Reads the config file
-        returns a dict of all settings.
+        Optional [password] for encrypted config files
+        Returns a dict of all settings.
         """
         try:
-            with open(filename, 'r') as configfile:
+            if password:
+                configfile = seecrypto.decrypt_file_in_memory(filename, password)
                 settings = yaml.safe_load(configfile)
+            else:
+                with open(filename, 'r') as configfile:
+                    settings = yaml.safe_load(configfile)
 
         except FileNotFoundError:
             sys.exit("Error: Could not find %s" % filename)

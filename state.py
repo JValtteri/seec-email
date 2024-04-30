@@ -6,7 +6,7 @@
 ## Menu - Main
 ## 12. Apr. 2024
 
-import config, mailer
+import config, mailer, seecrypto
 
 
 class ProgramState():
@@ -19,7 +19,7 @@ class ProgramState():
         self.__settings  = None
         self.mailbox     = None
         self.uid         = "<no name>"
-        self.__passwd    = b''
+        self.__passwd    = ''
 
     @property
     def logged_in(self) -> bool:
@@ -33,21 +33,37 @@ class ProgramState():
         """
         Returns the users email address
         """
-        return __settings.get_address
+        return self.__settings.get_address
+
+    @property
+    def passwd(self):
+        """
+        Returns the users password
+        """
+        return self.__passwd
 
     def login(self, passwd: bytes, uid=None) -> bool:
         """
         Loads configs and logs in to SEEC client
         """
-        self.__logged_in = True
+        self.__logged_in = False
         if uid:
             self.uid     = uid
         self.__passwd    = passwd
         ########################
         # TODO: Decrypt config #
         ########################
-        self.__settings  = config.Config()
-        return True
+        try:
+            self.__settings  = config.Config(password=passwd)
+        except UnicodeDecodeError:
+            return False, "Could not decrypt config"
+        except seecrypto.WrongKeyError:
+            return False, "Wrong Password or corrupt config"
+        except:
+            raise # TODO Debug
+            return False, "Could not load config"
+        self.__logged_in = True
+        return True, "Logged in"
 
     def logout(self) -> str:
         """

@@ -47,16 +47,17 @@ def inbox(state):
                 key = ui.show_message(
                     message=message_lines,
                     from_field=fromwho,
+                    to_field=state.address,
                     subject=subj,
                     header_note=note,
                     footer_note=status_message
                     )
                 if key in ui.KEY_D:
-                    password = getpass.getpass("Password: ")
-                    decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, password)
+                    decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, state.passwd)
                     key = ui.show_message(
                         message=decrypted_body.splitlines(),
                         from_field=fromwho,
+                        to_field=state.address,
                         subject=subj,
                         header_note="Decrypted",
                         footer_note=status_message

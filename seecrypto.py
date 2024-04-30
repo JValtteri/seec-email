@@ -7,6 +7,7 @@
 ## 17. Apr. 2024
 
 import gnupg, os, base64
+from cryptography.fernet import InvalidToken
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -16,6 +17,9 @@ SALT_SIZE = 16
 
 class RSAConfigurationError(Exception):
     """Exception raised for errors in the configuration."""
+
+class WrongKeyError(Exception):
+    """Exception raised for wrong password."""
 
 class GPG():
     """
@@ -105,7 +109,7 @@ class GPG():
             key_obj = self.__generate_gpg_default_key_pair(name, email, password)
         status_message = "Key generation successful"
         if key_obj.status != 'ok':
-            status_message = f"Key generation failed: {key_obj.status}"
+            status_message = f"Key generation failed: {key_obj.status}\n{key_obj.stderr}"
         return status_message
 
     def encrypt_with_key(self, data: bytes, recipient: str):
@@ -172,7 +176,11 @@ def decrypt_bytes(data: bytes, passphrase: bytes) -> bytes:
     salt       = data[-SALT_SIZE:]      # Extract the salt from the end
     crypt_data = data[:-SALT_SIZE]      # Extract the cryptext
     f = __init_fernet(passphrase, salt)
-    return f.decrypt(crypt_data)
+    try:
+        data = f.decrypt(crypt_data)
+    except InvalidToken:
+        raise WrongKeyError("Wrong password or corrupt data")
+    return data
 
 def encrypt_file_in_place(filename: str, passphrase: str) -> None:
     """
@@ -194,7 +202,7 @@ def decrypt_file_in_place(filename: str, passphrase: str) -> None:
     passphrase = passphrase.encode('utf-8')
     with open(filename, 'rb') as f:
         crypt_blob = f.read()
-        clear_data = decrypt_bytes(crypt_data, passphrase)
+        clear_data = decrypt_bytes(crypt_blob, passphrase)
     with open(filename, 'wb') as f:
         f.write(clear_data)
 
@@ -206,8 +214,6 @@ def decrypt_file_in_memory(filename: str, passphrase: str) -> bytes:
     passphrase = passphrase.encode('utf-8')
     with open(filename, 'rb') as f:
         crypt_blob = f.read()
-        salt=crypt_blob[-SALT_SIZE:]            # Extract the salt from the end
-        crypt_data = crypt_blob[:-SALT_SIZE]    # Extract the cryptext
-        clear_data = decrypt_bytes(crypt_data, passphrase, salt)
+        clear_data = decrypt_bytes(crypt_blob, passphrase)
     return clear_data
 
