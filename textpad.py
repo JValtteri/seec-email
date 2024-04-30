@@ -31,10 +31,12 @@ class TextPad():
         row = self.__print_message(msg)
         self.pad.addstr(row+1, 0, "="*self.pad_width)
         row = 0
+        key = ''
+        status = ''
         go = True
         while go:
-            go, row, key, status = self.__scroll(row)
             self.foot.show_key(key, status)
+            go, row, key, status = self.__scroll(row)
         return key
 
     def __print_message(self, msg):

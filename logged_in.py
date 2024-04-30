@@ -39,7 +39,7 @@ def inbox(state):
                     message=body.splitlines(),
                     from_field=fromwho,
                     subject=subj,
-                    note=" DEBUG "
+                    header_note=" DEBUG "
                     )
                 if key in ui.KEY_D:
                     password = getpass.getpass("Password: ")
@@ -49,7 +49,8 @@ def inbox(state):
                         message=decrypted_body.splitlines(),
                         from_field=fromwho,
                         subject=subj,
-                        note="Decrypted"
+                        header_note="Decrypted",
+                        footer_note=status_message
                         )
                 break
             except ValueError:

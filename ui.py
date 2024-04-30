@@ -69,7 +69,7 @@ class UI():
         self.addstr_cntr(TITLE, parm= self.YELLOW | BOLD, env=self.title)
         self.title.refresh()
 
-    def show_header(self, from_field, to_field, subject, note):
+    def show_header(self, from_field, to_field, subject, note=""):
         head = header.Header(
             TITLE_HEIGHT, HEADER_HEIGHT,
             self.screen_width, self.screen_height
@@ -77,25 +77,32 @@ class UI():
         head.set_text(from_field, to_field, subject, note)
         head.render()
 
-    def show_message(self, msg):
+    def show_message(self, msg, note=""):
         pad = textpad.TextPad(
             TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
             self.screen_width, self.screen_height, len(examplemsg)
             )
+        pad.foot.set_text(note, 2)
         key = pad.show_message(msg)
         return key
 
 
-def __show_message(scr, message, from_field, to_field, subject, note):
+def __show_message(scr, message, from_field, to_field, subject, header_note, footer_note=""):
     ui  = UI(scr)
     ui.show_title()
-    ui.show_header(from_field, to_field, subject, note)
-    key = ui.show_message(message)
+    ui.show_header(from_field, to_field, subject, header_note)
+    key = ui.show_message(message, footer_note)
     return key
 
-def show_message(message="<empty>", from_field=None,
-                 to_field=None, subject=None, note=None):
-    return curses.wrapper(__show_message, message, from_field, to_field, subject, note)
+def show_message(message="<empty>",
+                 from_field=None,
+                 to_field=None,
+                 subject=None,
+                 header_note="",
+                 footer_note=""
+
+    ):
+    return curses.wrapper(__show_message, message, from_field, to_field, subject, header_note, footer_note)
 
 if __name__ == "__main__":
 
