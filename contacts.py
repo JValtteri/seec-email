@@ -53,6 +53,6 @@ class AddressBook():
         """
         Adds the given contact information to address book
         """
-        self.contacts.append({'name': name, 'addr': address})
+        self.contacts.append({'name': name, 'addr': address, 'key': False})
         self.__save_contacts()
 
