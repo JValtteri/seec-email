@@ -10,8 +10,9 @@ import curses
 class Footer():
 
     def __init__(self, screen_width, screen_height):
-        #   Format: [["Text"],   [Style],              [col_x_location]]
-        self.cols = [["", 0, 0], ["", curses.A_REVERSE, 5], ["", 0, 10]]
+        REVERSE = curses.A_REVERSE
+        #   Format: [["Text", Style, col_x_location], [...], [...]]
+        self.cols = [["", 0, 0], ["", curses.A_REVERSE, 5], ["", REVERSE, 10]]
         # Footer window
         self.foot = curses.newwin( 1, screen_width-1, screen_height-1, 0 )
 
