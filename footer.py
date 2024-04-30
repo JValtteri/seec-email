@@ -10,19 +10,20 @@ import curses
 class Footer():
 
     def __init__(self, screen_width, screen_height):
-
         #   Format: [["Text"],   [Style],              [col_x_location]]
         self.cols = [["", 0, 0], ["", curses.A_REVERSE, 5], ["", 0, 10]]
         # Footer window
         self.foot = curses.newwin( 1, screen_width-1, screen_height-1, 0 )
 
     def render(self):
+        """Draws the footer with the set content"""
         self.foot.clear()
         for col in self.cols:
             self.foot.addstr(0, col[2], col[0], col[1])
         self.foot.refresh()
 
     def set_text(self, txt, col=0, style=None, pos=None):
+        """Sets the content of particular footer column"""
         self.cols[col][0] = txt
         if style != None:
             self.cols[col][1] = style
@@ -30,11 +31,17 @@ class Footer():
             self.cols[col][2] = pos
 
     def clear_all():
+        """Clears the footer"""
         self.foot.clear()
         for col in self.cols:
             col[0] = ""
 
     def show_key(self, key, txt=""):
+        """
+        A function to simultanously
+        - set the content of two columns
+        - and render the footer
+        """
         self.set_text(str(key), 0)
         self.set_text(txt, 1)
         self.render()
