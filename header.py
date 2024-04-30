@@ -13,6 +13,9 @@ class Header():
         # Colors
         self.YELLOW = curses.color_pair(1)
         self.RED = curses.color_pair(2)
+        self.BLUE = curses.color_pair(3)
+        self.BOLD = curses.A_BOLD
+        self.REVERSE = curses.A_REVERSE
 
         self.note = "<plaintext>"
         self.from_field = "from@mail.domain"
@@ -38,7 +41,7 @@ class Header():
         self._head.addstr(0, self.indent, "From:    "+self.from_field, self.YELLOW)
         self._head.addstr(1, self.indent, "To:      "+self.to_field, self.YELLOW)
         self._head.addstr(2, self.indent, "Subject: "+self.subject, self.YELLOW)
-        self._head.addstr(1, reverse_indent, self.note, curses.A_BOLD | self.RED)
+        self._head.addstr(1, reverse_indent, self.note, self.BOLD | self.BLUE | self.REVERSE)
         self._head.refresh()
 
     def clear_all():

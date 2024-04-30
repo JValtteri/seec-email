@@ -9,6 +9,9 @@
 import getpass
 import ui, contacts, seecrypto
 
+PGB_START = "-----BEGIN PGP MESSAGE-----"
+PGP_END = "-----END PGP MESSAGE-----"
+
 def __print_inbox(state):
     index = 0
     for mail in state.mailbox.inbox:
@@ -34,17 +37,23 @@ def inbox(state):
                 message = state.mailbox.inbox[int(selection)]
                 date, subj, fromwho, _ = state.mailbox.get_message_header(message)
                 body = state.mailbox.get_message_body(message)
-
+                message_lines = body.splitlines()
+                if PGB_START in message_lines and PGP_END in message_lines:
+                    note = "ENCRYPTED"# todo
+                    status_message = "Press D to decrypt"
+                else:
+                    note = "PLAIN TEXT"
+                    status_message = ""
                 key = ui.show_message(
-                    message=body.splitlines(),
+                    message=message_lines,
                     from_field=fromwho,
                     subject=subj,
-                    header_note=" DEBUG "
+                    header_note=note,
+                    footer_note=status_message
                     )
                 if key in ui.KEY_D:
                     password = getpass.getpass("Password: ")
                     decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, password)
-                    ### print(":: "+status_message)
                     key = ui.show_message(
                         message=decrypted_body.splitlines(),
                         from_field=fromwho,
