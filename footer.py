@@ -11,11 +11,10 @@ class Footer():
 
     def __init__(self, screen_width, screen_height):
 
-        # ["Text", Style, col_x_location]
+        #   Format: [["Text"],   [Style],              [col_x_location]]
         self.cols = [["", 0, 0], ["", curses.A_REVERSE, 5], ["", 0, 10]]
-        # self.center = ["", 0]
-        # Footer element
-        self.foot = curses.newwin( 1, screen_width-1, screen_height-1, 0 )     # Footer Window
+        # Footer window
+        self.foot = curses.newwin( 1, screen_width-1, screen_height-1, 0 )
 
     def render(self):
         self.foot.clear()
@@ -39,23 +38,3 @@ class Footer():
         self.set_text(str(key), 0)
         self.set_text(txt, 1)
         self.render()
-
-    # def show_status_message(self, msg):
-    #     self.addstr_cntr(msg, env=self.foot)
-    #     self.foot.refresh()
-
-        # self.foot.clear()
-        # if key in KEY_Q:
-        #     self.foot.addstr(0,5, "QUIT", REVERSE)
-        # elif key == KEY_UP:
-        #     self.foot.addstr(0,5, " UP ", REVERSE)
-        # elif key == KEY_DOWN:
-        #     self.foot.addstr(0,5, "DOWN", REVERSE)
-        # else:
-        #     self.foot.addstr(0,5, "    ", REVERSE)
-        # if key == "end":
-        #     self.foot.addstr(0,5, "END ", REVERSE)
-        # elif key == "top":
-        #     self.foot.addstr(0,5, "TOP ", REVERSE)
-        # self.foot.addstr(0,0,str(key))
-        # self.foot.refresh()
