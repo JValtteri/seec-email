@@ -89,12 +89,12 @@ class GPG():
         key_obj = self.gpg.gen_key(key_settings)
         return key_obj
 
-    def generate_key_pair(self, name: str, email: str, password=b'', length=1024, type='rsa'):
+    def generate_key_pair(self, name: str, email: str, password='', length=1024, type='rsa'):
         """
         Public interface to generate a cryptographically strong key pair
         The key is stored in a key chain
         """
-        password = password.encode('utf-8')
+        #password = password.encode('utf-8')
         if length not in [1024, 2048]:
             raise RSAConfigurationError(f"Unsupported key length: {length}")
         if type == 'rsa':
@@ -117,7 +117,7 @@ class GPG():
         pgp_obj = self.gpg.encrypt(data, recipient, always_trust=True)
         status_message = "Message encrypted"
         if pgp_obj.status != 'encryption ok':
-            status_message = f"Encryption failed: {pgp_obj.status}"
+            status_message = f"Encryption failed: {pgp_obj.status}\n{pgp_obj.stderr}"
         data = pgp_obj.data.decode(self.encoding)
         return data, status_message
 
@@ -125,7 +125,6 @@ class GPG():
         """
         Decrypts the [message] with the private key
         """
-        password = password.encode('utf-8')
         pgp_obj = self.gpg.decrypt(message, passphrase=password, always_trust=True)
         return pgp_obj.data, pgp_obj.status
 

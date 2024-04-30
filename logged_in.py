@@ -43,7 +43,8 @@ def inbox(state):
                     )
                 if key in ui.KEY_D:
                     password = getpass.getpass("Password: ")
-                    decrypted_body = seecrypto.GPG().decrypt_with_key(body, password)
+                    decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, password)
+                    ### print(":: "+status_message)
                     key = ui.show_message(
                         message=decrypted_body.splitlines(),
                         from_field=fromwho,
