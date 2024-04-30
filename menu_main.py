@@ -10,7 +10,7 @@ import logged_in, logged_out
 def menu(state, key=b"", status_message=""):
     go = True
     while go == True:
-        print("\<<<<< SEEC - Secure Email Client >>>>>\n")
+        print("\n<<<<< SEEC - Secure Email Client >>>>>\n")
         if state.logged_in:
             try:
                 go, status_message = logged_in.menu(state, status_message)
@@ -21,4 +21,3 @@ def menu(state, key=b"", status_message=""):
         else:
             go, status_message = logged_out.menu(state, status_message)
     return status_message
-
