@@ -35,6 +35,14 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 - [ ] Decrypting messages
 - [ ] Encrypting/Decrypting email credintials
 
+#### Future development ideas
+
+- [ ] OAuth support (for logging in to gmail)
+- [ ] Better support for use as a library or command line utility
+- [ ] Ability to download messages to disk
+- [ ] Ability to send and receive attachments
+
+
 ## Usage
 
 ### Setting up
