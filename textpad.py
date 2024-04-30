@@ -34,7 +34,7 @@ class TextPad():
         go = True
         while go:
             go, row, key, status = self.__scroll(row)
-            self.foot.show_key((key, status))
+            self.foot.show_key(key, status)
         return key
 
     def __print_message(self, msg):
