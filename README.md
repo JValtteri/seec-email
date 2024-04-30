@@ -25,15 +25,15 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 ## Features
 
 - [ ] Client log in
-	- [ ] Asymmetric Encryption
 	- [x] Keys stored securely
+	- [ ] Encrypting/Decrypting email credintials
 - [x] SSL connection to SMTP mail server
 - [x] Send and Receive emails
 - [ ] Browse messages without downloading
 - [x] Generating PGP keys pairs
-- [x] Encrypting messages
-- [ ] Decrypting messages
-- [ ] Encrypting/Decrypting email credintials
+- [x] Asymmetric Encryption
+	- [x] Encrypting messages
+	- [x] Decrypting messages
 
 #### Future development ideas
 
