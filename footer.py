@@ -23,9 +23,10 @@ class Footer():
             self.foot.addstr(0, col[2], col[0], col[1])
         self.foot.refresh()
 
-    def set_text(self, txt, col=0, style=0, pos=None):
+    def set_text(self, txt, col=0, style=None, pos=None):
         self.cols[col][0] = txt
-        self.cols[col][1] = style
+        if style != None:
+            self.cols[col][1] = style
         if pos != None:
             self.cols[col][2] = pos
 
