@@ -72,7 +72,10 @@ class ProgramState():
         - Clears configs
         - Clears passwords
         """
-        self.mailbox.logout()
+        try:
+            self.mailbox.logout()
+        except:
+            pass
         self.__passwd    = b''
         self.uid         = "<no name>"
         self.mailbox     = None
@@ -94,6 +97,9 @@ class ProgramState():
         print(f"IMAP:\t{imap['addr']},\t{imap['port']}")
         print(f"SMTP:\t{smtp['addr']},\t{smtp['port']}")
         ####                     ####
-        self.mailbox   = mailer.Mailbox(self.__settings)
-        status_message = self.mailbox.status_message
+        try:
+            self.mailbox   = mailer.Mailbox(self.__settings)
+            status_message = self.mailbox.status_message
+        except:
+            status_message = "Logging in to mail server failed"
         return status_message

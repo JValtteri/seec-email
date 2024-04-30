@@ -21,7 +21,12 @@ def login_with(state, passwd):
         return status_message
     # Login to email server
     status_message = state.mail_login()
+    if status_message != "Logged in to mailbox":
+        state.logout()
+        return status_message
     print(":: "+status_message)
+    if passwd:
+        return "Logged in"
     return "No Encryption"
 
 def new_user(state):
