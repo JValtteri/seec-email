@@ -90,11 +90,12 @@ def __show_message(scr, message, from_field, to_field, subject, note):
     ui  = UI(scr)
     ui.show_title()
     ui.show_header(from_field, to_field, subject, note)
-    ui.show_message(message)
+    key = ui.show_message(message)
+    return key
 
 def show_message(message="<empty>", from_field=None,
                  to_field=None, subject=None, note=None):
-    curses.wrapper(__show_message, message, from_field, to_field, subject, note)
+    return curses.wrapper(__show_message, message, from_field, to_field, subject, note)
 
 if __name__ == "__main__":
 
