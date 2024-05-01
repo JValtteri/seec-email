@@ -66,7 +66,7 @@ Email header info is not encrypted. Do not put sensitive information in the subj
 Python | >= 3.7
 pyyaml | >= 5.4
 python-gnupg | >= 0.5.2
-cryptography | ~
+cryptography | >= 40.0.1
 
 **Install requirements**
 
