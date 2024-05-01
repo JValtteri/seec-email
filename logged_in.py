@@ -13,6 +13,7 @@ PGB_START = "-----BEGIN PGP MESSAGE-----"
 PGP_END = "-----END PGP MESSAGE-----"
 
 def __print_inbox(state):
+    print("")
     index = 0
     for mail in state.mailbox.inbox:
         date, subject, from_addr, to_addr = state.mailbox.get_message_header(mail)
@@ -22,8 +23,8 @@ def __print_inbox(state):
 
 def inbox(state):
     status_message = state.mailbox.update_inbox()
-    __print_inbox(state)
     while True:
+        __print_inbox(state)
         print(":: "+status_message)
         selection = input("> ")
         if selection in ['q', 'Q']:
@@ -40,7 +41,7 @@ def inbox(state):
                 message_lines = body.splitlines()
                 encrypted = False
                 if PGB_START in message_lines and PGP_END in message_lines:
-                    encrypted = False
+                    encrypted = True
                     note = "ENCRYPTED"# todo
                     status_message = "Press D to decrypt"
                 else:
@@ -54,6 +55,7 @@ def inbox(state):
                     header_note=note,
                     footer_note=status_message
                     )
+                status_message = ""
                 if key in ui.KEY_D and encrypted:
                     decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, state.passwd)
                     key = ui.show_message(
@@ -64,7 +66,6 @@ def inbox(state):
                         header_note="Decrypted",
                         footer_note=status_message
                         )
-                break
             except ValueError:
                 status_message = "Invalid option"
             except IndexError:
