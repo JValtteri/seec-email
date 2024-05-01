@@ -141,11 +141,12 @@ def address_book(state):
                 status_message = "Not a number"
                 raise # TODO DEBUG
             else:
-                selection = input("Encrypt (Y/n)\n> ")
-                if selection != 'n':
-                    encrypt = True
-                compose_mail(state, contact['addr'], encrypt)
-                break
+                if contact['key']:
+                    selection = input("Encrypt (Y/n)\n> ")
+                    if selection != 'n':
+                        encrypt = True
+                status_message = compose_mail(state, contact['addr'], encrypt)
+                return status_message
 
 def menu(state, status_message):
     go = True
