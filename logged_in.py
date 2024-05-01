@@ -80,13 +80,18 @@ def compose_mail(state, to_addr=None, encrypt=False):
     # TODO: Option to use contacts
     subject = input("Subject:\t")
     # Start email editor
-    print("Write your Email. Press ENTER twice to send")
+    print("Write your Email. Press ENTER three times to send")
     print("="*43)
     lines = []
     line = "<None>"
-    while line != "":
+    empty_lines = 0
+    while empty_lines < 2:
         line = input("")
         lines.append(line)
+        if line == "":
+            empty_lines += 1
+        else:
+            empty_lines = 0
     print("="*43)
     message_body = "\n".join(lines)
     from_addr = state.address
@@ -94,8 +99,8 @@ def compose_mail(state, to_addr=None, encrypt=False):
     if encrypt:
         message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
         print(f":: {status_message}")
-        if status_message != 'encryption ok':
-            return "Sending failed"
+        if message_body == '':
+            return "Message not ecrypted, sending aborted"
     # Create EmailMessage object
     message = state.mailbox.create_message(message_body, from_addr, to_addr, subject)
     # Send message
@@ -128,7 +133,7 @@ def address_book(state):
         elif selection == "a":
             __add_contact(A)
         elif selection == "q":
-            break
+            return ""
         else:
             try:
                 contact = A.get_address(int(selection))
