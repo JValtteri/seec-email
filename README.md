@@ -44,6 +44,13 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 - [ ] Ability to download messages to disk
 - [ ] Ability to send and receive attachments
 
+## Encryption
+
+For encrypting messages, SEEC uses the [standard asymmetric encryption used by OpenPGP](https://www.gnupg.org/faq/gnupg-faq.html#default_rsa2048), 2048-bit RSA. It ensures compatability with other PGP clients. One day elliptic curve cryptography will become the standard, but it unfortunately, at the time of writing is not.
+
+For encrypting the configuration file, containing the email server credintials, SEEC uses Python [Fernet](https://cryptography.io/en/latest/fernet/) library, which uses AES-128 in CBC mode.[^1]
+
+[^1]: https://github.com/pyca/cryptography/blob/main/src/cryptography/fernet.py
 
 ## Usage
 
