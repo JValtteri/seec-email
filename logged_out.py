@@ -7,7 +7,7 @@
 ## 12. Apr. 2024
 
 import getpass
-import seecrypto
+import seecrypto, key_view
 import help
 
 
@@ -29,7 +29,7 @@ def login_with(state, passwd):
         return "Logged in"
     return "No Encryption"
 
-def new_user(state):
+def new_user():
     print("New User")
 
     # Print warnings about importing config.yml
@@ -69,11 +69,44 @@ def new_user(state):
 
     return status_message
 
+
+def import_keys():
+    print("Paste the key(s) here. Press ENTER two times to confirm")
+    print("Ctrl+C to cancel")
+    lines = []
+    line = "<None>"
+    empty_lines = 0
+    print("="*43)
+    while empty_lines < 2:
+        line = input("")
+        lines.append(line.strip())
+        if line == "":
+            empty_lines += 1
+        else:
+            empty_lines = 0
+    print("="*43)
+    key_data = "\n".join(lines)
+    gpg = seecrypto.GPG()
+    ret_obj = gpg.import_public_key(key_data)
+    try: print(ret_obj.ok)
+    except: pass
+    return ""
+
+def list_keys():
+    key_view.print_keys(str(seecrypto.GPG().list_keys()))
+
+def del_key():
+    id = input("Key ID to delete\n> ")
+    obj = seecrypto.GPG().delete_key(id, False)
+    return obj.status
+
 def menu(state, status_message):
     go = True
     print("\t0 - Login")
     print("\t1 - New User")
     print("\t2 - Import public key")
+    print("\t3 - List public keys")
+    print("\t4 - Delete public key")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
@@ -87,9 +120,13 @@ def menu(state, status_message):
         passwd = getpass.getpass("password: ")
         status_message = login_with(state, passwd)
     elif selection == "1":
-        status_message = new_user(state)
+        status_message = new_user()
     elif selection == "2":
-        print("Import not implemented")
+        status_message =  import_keys()
+    elif selection == "3":
+        list_keys()
+    elif selection == "4":
+        status_message = del_key()
     else:
         status_message = f":: Woops, bad input: '{selection}'"
     return go, status_message

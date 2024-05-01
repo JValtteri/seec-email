@@ -93,7 +93,7 @@ class GPG():
         key_obj = self.gpg.gen_key(key_settings)
         return key_obj
 
-    def generate_key_pair(self, name: str, email: str, password='', length=2048, type='rsa'):
+    def generate_key_pair(self, name: str, email: str, password='', length=2048, type='rsa') -> str:
         """
         Public interface to generate a cryptographically strong key pair
         The key is stored in a key chain
@@ -112,7 +112,7 @@ class GPG():
             status_message = f"Key generation failed: {key_obj.status}\n{key_obj.stderr}"
         return status_message
 
-    def encrypt_with_key(self, data: bytes, recipient: str):
+    def encrypt_with_key(self, data: bytes, recipient: str) -> (bytes, str):
         """
         Encrypts the [data] with a public key corresponding with [recipient]
         [recipient] is any identifiable information corresponding with a key
@@ -125,7 +125,7 @@ class GPG():
         data = pgp_obj.data.decode(self.encoding)
         return data, status_message
 
-    def decrypt_with_key(self, message, password):
+    def decrypt_with_key(self, message, password) -> (str, str):
         """
         Decrypts the [message] with the private key
         """
@@ -150,6 +150,14 @@ class GPG():
         Returns a list of key dicts
         """
         return self.gpg.list_keys()
+
+    def delete_key(self, id, private=False, passwd=''):
+        """
+        Deletes a key [id]
+        if [private] flag is True, deletes the private key
+        Returns the response object
+        """
+        return self.gpg.delete_keys(id, private, passphrase=passwd)
 
 def __init_fernet(passphrase: bytes, salt: bytes) -> Fernet:
     """
