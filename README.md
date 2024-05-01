@@ -9,11 +9,6 @@ Created as a course project submission for Tampere University **Secure Programmi
 
 #### Disclaimer!
 
-```diff
-- This project is very much a work in progress!
-- All basic security features are not yet complete!
-```
-
 This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Though I've made every effort to follow secure programming best practices, the software has not been audited by a professional entity, so the real world security has not been verified. Also, this client is incredibly bare-bones. You'd likely not get much use of it anyways.
 
 #### Technical documentation
@@ -51,6 +46,10 @@ For encrypting messages, SEEC uses the [standard asymmetric encryption used by O
 For encrypting the configuration file, containing the email server credintials, SEEC uses Python [Fernet](https://cryptography.io/en/latest/fernet/) library, which uses AES-128 in CBC mode.[^1]
 
 [^1]: https://github.com/pyca/cryptography/blob/main/src/cryptography/fernet.py
+
+#### Warning!
+
+Email header info is not encrypted. Do not put sensitive information in the subject field.
 
 ## Usage
 
@@ -204,12 +203,26 @@ If a public key is available for the address, you are prompted to encrypt the me
 
 Address book allows you to send messages and add new contacts.
 
-#### Adding public key for a contact
+### Key management
+
+#### Adding public keys
 
 From main menu, select import key.
 
 1. Select the address the key is for
 2. Copy the key in to the entry field
+
+#### Exporting your public key
+
+When logged ind, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email or how ever you want to deliver it.
+
+#### More advanced stuff
+
+The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with a OpenPGP compatible program and perform any number of actions.
+
+Asuming you have followed the install instructions, you should have `gpg` installed.
+
+Your private key is secured with the password you created when creating your user in SEEC.
 
 ## Troubleshooting
 
