@@ -143,7 +143,13 @@ class GPG():
         Exports a public key matching a uid, such as an email address
         """
         # False: Explicitly export only public keys
-        key = self.gpg.export_keys(uid, False)
+        return self.gpg.export_keys(uid, False)
+
+    def list_keys(self):
+        """
+        Returns a list of key dicts
+        """
+        return self.gpg.list_keys()
 
 def __init_fernet(passphrase: bytes, salt: bytes) -> Fernet:
     """

@@ -74,7 +74,6 @@ def menu(state, status_message):
     print("\t0 - Login")
     print("\t1 - New User")
     print("\t2 - Import public key")
-    print("\t3 - Export public key")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
@@ -91,8 +90,6 @@ def menu(state, status_message):
         status_message = new_user(state)
     elif selection == "2":
         print("Import not implemented")
-    elif selection == "3":
-        print("Export not implemented")
     else:
         status_message = f":: Woops, bad input: '{selection}'"
     return go, status_message

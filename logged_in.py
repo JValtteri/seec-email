@@ -148,12 +148,18 @@ def address_book(state):
                 status_message = compose_mail(state, contact['addr'], encrypt)
                 return status_message
 
+def show_public_key(state):
+    pub_key = seecrypto.GPG().export_public_key(state.address)
+    print(pub_key)
+    return ""
+
 def menu(state, status_message):
     go = True
     login = True
     print("\t0 - Show Inbox")
     print("\t1 - Write Mail")
     print("\t2 - Address Book")
+    print("\t3 - Export public key")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
@@ -166,6 +172,8 @@ def menu(state, status_message):
         status_message = compose_mail(state)
     elif selection == "2":
         status_message = address_book(state)
+    elif selection == "3":
+        status_message = show_public_key(state)
     elif selection in ["q", "Q"]:
         status_message = state.logout()
         go = False
