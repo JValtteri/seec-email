@@ -38,7 +38,9 @@ def inbox(state):
                 date, subj, fromwho, _ = state.mailbox.get_message_header(message)
                 body = state.mailbox.get_message_body(message)
                 message_lines = body.splitlines()
+                encrypted = False
                 if PGB_START in message_lines and PGP_END in message_lines:
+                    encrypted = False
                     note = "ENCRYPTED"# todo
                     status_message = "Press D to decrypt"
                 else:
@@ -52,7 +54,7 @@ def inbox(state):
                     header_note=note,
                     footer_note=status_message
                     )
-                if key in ui.KEY_D:
+                if key in ui.KEY_D and encrypted:
                     decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, state.passwd)
                     key = ui.show_message(
                         message=decrypted_body.splitlines(),
@@ -92,6 +94,8 @@ def compose_mail(state, to_addr=None, encrypt=False):
     if encrypt:
         message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
         print(f":: {status_message}")
+        if status_message != 'encryption ok':
+            return "Sending failed"
     # Create EmailMessage object
     message = state.mailbox.create_message(message_body, from_addr, to_addr, subject)
     # Send message
