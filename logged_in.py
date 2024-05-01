@@ -152,6 +152,10 @@ def address_book(state):
 def show_public_key(state):
     pub_key = seecrypto.GPG().export_public_key(state.address)
     print(pub_key)
+    print("Copy the key, including the START and END lines.\n"+
+          "and give to anyone you want to be able to send you\n"+
+          "encrypted mail.\n")
+    input("Press ENTER to return to menu.")
     return ""
 
 def menu(state, status_message):
