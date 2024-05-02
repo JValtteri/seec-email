@@ -7,21 +7,27 @@
 ## 12. Apr. 2024
 
 import getpass
-import ui, contacts, seecrypto
+import ui, contacts, seecrypto, key_utility, util
 
 PGB_START = "-----BEGIN PGP MESSAGE-----"
 PGP_END = "-----END PGP MESSAGE-----"
 
 def __print_inbox(state):
+    """
+    Prints the content of the inbox
+    """
     print("")
     index = 0
     for mail in state.mailbox.inbox:
-        date, subject, from_addr, to_addr = state.mailbox.get_message_header(mail)
+        date, subject, from_addr, _ = state.mailbox.get_message_header(mail)
         print(f"{index}:\t{date}\t\t{subject}\t\t{from_addr}")
         index += 1
 
 
-def inbox(state):
+def inbox(state) -> str:
+    """
+    Interface for inbox
+    """
     status_message = state.mailbox.update_inbox()
     while True:
         __print_inbox(state)
@@ -34,15 +40,14 @@ def inbox(state):
             status_message = ""
         else:
             try:
-                #state.mailbox.open_message(int(selection))
                 message = state.mailbox.inbox[int(selection)]
-                date, subj, fromwho, _ = state.mailbox.get_message_header(message)
+                _, subj, fromwho, _ = state.mailbox.get_message_header(message)
                 body = state.mailbox.get_message_body(message)
                 message_lines = body.splitlines()
                 encrypted = False
                 if PGB_START in message_lines and PGP_END in message_lines:
                     encrypted = True
-                    note = "ENCRYPTED"# todo
+                    note = "ENCRYPTED"
                     status_message = "Press D to decrypt"
                 else:
                     note = "PLAIN TEXT"
@@ -70,31 +75,18 @@ def inbox(state):
                 status_message = "Invalid option"
             except IndexError:
                 status_message = "Out of range"
-
     return status_message
 
-
 def compose_mail(state, to_addr=None, encrypt=False):
+    """
+    Interface for composing an email message
+    """
     # Address
     if not to_addr:
         to_addr = input("To Address:\t")
-    # TODO: Option to use contacts
     subject = input("Subject:\t")
     # Start email editor
-    print("Write your Email. Press ENTER three times to send")
-    print("="*43)
-    lines = []
-    line = "<None>"
-    empty_lines = 0
-    while empty_lines < 2:
-        line = input("")
-        lines.append(line)
-        if line == "":
-            empty_lines += 1
-        else:
-            empty_lines = 0
-    print("="*43)
-    message_body = "\n".join(lines)
+    message_body = util.text_editor("Write your Email. Press ENTER three times to send")
     from_addr = state.address
     # TODO Encrypt if public key available
     if encrypt:
@@ -117,7 +109,10 @@ def __add_contact(A):
     address = input("Address: ")
     A.add_address(name, address)
 
-def address_book(state):
+def address_book(state) -> str:
+    """
+    Address book
+    """
     A = contacts.AddressBook()
     status_message = ""
     while True:
@@ -140,7 +135,6 @@ def address_book(state):
                 contact = A.get_address(int(selection))
             except TypeError:
                 status_message = "Not a number"
-                raise # TODO DEBUG
             else:
                 if contact['key']:
                     selection = input("Encrypt (Y/n)\n> ")
@@ -149,21 +143,15 @@ def address_book(state):
                 status_message = compose_mail(state, contact['addr'], encrypt)
                 return status_message
 
-def show_public_key(state):
-    pub_key = seecrypto.GPG().export_public_key(state.address)
-    print(pub_key)
-    print("Copy the key, including the START and END lines.\n"+
-          "and give to anyone you want to be able to send you\n"+
-          "encrypted mail.\n")
-    input("Press ENTER to return to menu.")
-    return ""
-
-def menu(state, status_message):
+def menu(state, status_message) -> (bool, str):
+    """
+    Main menu for logged in user
+    """
     go = True
     login = True
     print("\t0 - Show Inbox")
-    print("\t1 - Write Mail")
-    print("\t2 - Address Book")
+    print("\t1 - Address Book")
+    print("\t2 - Write Unencrypted Mail")
     print("\t3 - Export public key")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
@@ -174,11 +162,11 @@ def menu(state, status_message):
     elif selection == "0":
         status_message = inbox(state)
     elif selection == "1":
-        status_message = compose_mail(state)
-    elif selection == "2":
         status_message = address_book(state)
+    elif selection == "2":
+        status_message = compose_mail(state)
     elif selection == "3":
-        status_message = show_public_key(state)
+        status_message = key_utility.show_key(state.address)
     elif selection in ["q", "Q"]:
         status_message = state.logout()
         go = False

@@ -7,14 +7,13 @@
 ## 12. Apr. 2024
 
 import getpass
-import seecrypto, key_view
-import help
+import seecrypto, key_utility, help
 
 
-def login_with(state, passwd):
-    '''
+def login_with(state, passwd) -> str:
+    """
     Logs in to each system
-    '''
+    """
     # Loads config
     success, status_message = state.login(passwd)
     if not success:
@@ -29,91 +28,44 @@ def login_with(state, passwd):
         return "Logged in"
     return "No Encryption"
 
-def new_user():
+def new_user() -> str:
+    """
+    Create a new user with a PGP key and Config
+    """
     print("New User")
-
-    # Print warnings about importing config.yml
     print("IMPORTING CONFIG\n")
     for warning in help.IMPORT_WARNING:
         print(warning.strip())
         input()
     choise = input("Do you want to proceed?\n(y/N)\n> ")
-
     if choise not in ['Y', 'y']:
         return "Aborted"
-
-    # Print all the security warnings
     print("\nNOTE!")
     for disclaimer in help.SECURITY_DISCLAIMERS:
         print(disclaimer.strip())
         input()
-
-    # Set the password
-    name = input("Name: ")
-    passwd   = getpass.getpass("       Password: ")
-    passwd_1 = getpass.getpass("Retype Password: ")
-    if passwd != passwd_1:
-        status_message = "Passwords didn't match"
-        return status_message
-
-    # Generate PGP key
-    gpg = seecrypto.GPG()
-    status_message = f"Password set for: {name}"
-    email = input("Email address: ")
-    status_message = gpg.generate_key_pair(name, email, password=passwd)
-    print("Your Public key:")
-    print(gpg.export_public_key(uid=email))
-
+    # Make the PGP key
+    status_message, name, passwd = key_utility.make_gpg_key()
+    status_message = f"Password set for: {name}, {status_message}"
     # (Set and) Encrypt config
     seecrypto.encrypt_file_in_place("config.yml", passwd)
-
     return status_message
 
-
-def import_keys():
-    print("Paste the key(s) here. Press ENTER two times to confirm")
-    print("Ctrl+C to cancel")
-    lines = []
-    line = "<None>"
-    empty_lines = 0
-    print("="*43)
-    while empty_lines < 2:
-        line = input("")
-        lines.append(line.strip())
-        if line == "":
-            empty_lines += 1
-        else:
-            empty_lines = 0
-    print("="*43)
-    key_data = "\n".join(lines)
-    gpg = seecrypto.GPG()
-    ret_obj = gpg.import_public_key(key_data)
-    try: print(ret_obj.ok)
-    except: pass
-    return ""
-
-def list_keys():
-    key_view.print_keys(str(seecrypto.GPG().list_keys()))
-
-def del_key():
-    id = input("Key ID to delete\n> ")
-    obj = seecrypto.GPG().delete_key(id, False)
-    return obj.status
-
-def menu(state, status_message):
+def menu(state, status_message) -> (bool, str):
+    """
+    Main Menu
+    """
     go = True
     print("\t0 - Login")
     print("\t1 - New User")
     print("\t2 - Import public key")
-    print("\t3 - List public keys")
-    print("\t4 - Delete public key")
+    print("\t3 - Key Utilities")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
 
     if selection == "":
         status_message = ""
-
     elif selection in ["q", "Q"]:
         go = False
     elif selection == "0":
@@ -122,11 +74,9 @@ def menu(state, status_message):
     elif selection == "1":
         status_message = new_user()
     elif selection == "2":
-        status_message =  import_keys()
+        status_message =  key_utility.import_keys()
     elif selection == "3":
-        list_keys()
-    elif selection == "4":
-        status_message = del_key()
+        key_utility.main()
     else:
         status_message = f":: Woops, bad input: '{selection}'"
     return go, status_message

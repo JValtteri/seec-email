@@ -15,7 +15,7 @@ def print_keys(key_list):
     keys = yaml.safe_load(key_list)
     for key in keys:
         print("")
-        uid = str(key['uids']).strip("['']")
+        uid = str(key['uids']).strip("[']")
         print(f"        UID: {uid}\n"+
               f"       Type: {key['type']}\n"+
               f"       Algo: {key['algo']}\n"+
@@ -30,7 +30,7 @@ def address_in_keys(addr, key_list) -> bool:
     """
     keys = yaml.safe_load(key_list)
     for key in keys:
-        uid = str(key['uids']).strip("['']").split()
+        uid = str(key['uids']).strip("[']").split()
         address = uid[-1].strip('<>')
         if address == addr:
             return True
