@@ -3,7 +3,7 @@
 ## SEEC - Secure Encrypted Email Client
 ## Programming project for Secure Programming course at TUNI
 ##
-## Help texts
+## Texts and Disclaimers
 ## 30. Apr. 2024
 
 IMPORT_WARNING = [
