@@ -7,7 +7,9 @@
 ## 12. Apr. 2024
 
 import getpass
-import seecrypto, key_utility, texts
+import seecrypto
+import key_utility
+import texts
 
 
 def login_with(state, passwd) -> str:

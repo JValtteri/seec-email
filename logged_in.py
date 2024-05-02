@@ -6,7 +6,11 @@
 ## Menu - Logged in
 ## 12. Apr. 2024
 
-import ui, contacts, seecrypto, key_utility, util
+import ui
+import contacts
+import seecrypto
+import key_utility
+import util
 
 
 PGB_START = "-----BEGIN PGP MESSAGE-----"
@@ -62,7 +66,8 @@ def inbox(state) -> str:
                     )
                 status_message = ""
                 if key in ui.KEY_D and encrypted:
-                    decrypted_body, status_message = seecrypto.GPG().decrypt_with_key(body, state.passwd)
+                    gpg = seecrypto.GPG()
+                    decrypted_body, status_message = gpg.decrypt_with_key(body, state.passwd)
                     key = ui.show_message(
                         message=decrypted_body.splitlines(),
                         from_field=fromwho,

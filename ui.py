@@ -95,10 +95,7 @@ class UI():
         subject    = subject field
         note       = note in the corner about encryption status
         """
-        head = header.Header(
-            TITLE_HEIGHT, HEADER_HEIGHT,
-            self.screen_width, self.screen_height
-            )
+        head = header.Header(TITLE_HEIGHT, HEADER_HEIGHT, self.screen_width)
         head.set_text(from_field, to_field, subject, note)
         head.render()
 
