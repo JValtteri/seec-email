@@ -6,7 +6,11 @@
 ## UI - SEEC UI Elements
 ## 13. Mar. 2024
 
-import curses, textpad, footer, header
+import curses
+import textpad
+import footer
+import header
+
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
 
@@ -29,6 +33,10 @@ examplemsg = lorem_ipsum.LOREM_IPSUM.split('\n')
 
 
 class UI():
+    """
+    Main UI class
+    Handles all curses Text UI elements
+    """
 
     def __init__(self, scr):
         # Init colors
@@ -53,23 +61,40 @@ class UI():
         self.win = curses.newwin( h-1, w-1, 1, 1 )      # Content Window
 
     def get_size(self):
+        """Returns screen (width, height)"""
         return self.screen_width, self.screen_height
 
-    def clear_scr():
+    def clear_scr(self):
+        """Clears the screen from all elements"""
         self.scr.clear()
         self.scr.refresh()
 
     def addstr_cntr(self, text, line=0, parm=0, env=None):
-        if env == None:
+        """
+        Adds center justified text
+        text = Displayed text
+        line = Distance from the top of the screen
+        parm = Style parameters
+        env  = screen or window to draw on
+        """
+        if env is None:
             env = self.scr
         x = int( self.screen_width / 2 - len(text)/2 )
         env.addstr(line, x, text, parm)
 
     def show_title(self):
+        """Draws a title element on the main screen"""
         self.addstr_cntr(TITLE, parm= self.YELLOW | BOLD, env=self.title)
         self.title.refresh()
 
     def show_header(self, from_field, to_field, subject, note=""):
+        """
+        Creates and draws an email header object on screen
+        from_field = from email address
+        to_field,  = to email address
+        subject    = subject field
+        note       = note in the corner about encryption status
+        """
         head = header.Header(
             TITLE_HEIGHT, HEADER_HEIGHT,
             self.screen_width, self.screen_height
@@ -78,6 +103,9 @@ class UI():
         head.render()
 
     def show_message(self, msg, note=""):
+        """
+        Creates a TextPad object and renders the message [msg] body on it
+        """
         pad = textpad.TextPad(
             TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
             self.screen_width, self.screen_height, len(examplemsg)
@@ -88,6 +116,10 @@ class UI():
 
 
 def __show_message(scr, message, from_field, to_field, subject, header_note, footer_note=""):
+    """
+    Renders a complete message UI
+    Creates the UI instance, adds a title, header and shows the message
+    """
     ui  = UI(scr)
     ui.show_title()
     ui.show_header(from_field, to_field, subject, header_note)
@@ -102,9 +134,18 @@ def show_message(message="<empty>",
                  footer_note=""
 
     ):
-    return curses.wrapper(__show_message, message, from_field, to_field, subject, header_note, footer_note)
+    """
+    Public entrypoint for showing a message
+    """
+    return curses.wrapper(
+        __show_message,
+        message,
+        from_field,
+        to_field,
+        subject,
+        header_note,
+        footer_note
+        )
 
 if __name__ == "__main__":
-
-    #scr.getch()
     show_message(examplemsg)

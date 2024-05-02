@@ -6,8 +6,8 @@
 ## Menu - Logged in
 ## 12. Apr. 2024
 
-import getpass
 import ui, contacts, seecrypto, key_utility, util
+
 
 PGB_START = "-----BEGIN PGP MESSAGE-----"
 PGP_END = "-----END PGP MESSAGE-----"
@@ -33,10 +33,10 @@ def inbox(state) -> str:
         __print_inbox(state)
         print(":: "+status_message)
         selection = input("> ")
-        if selection in ['q', 'Q']:
+        if selection.upper() == 'Q':
             status_message = "Exit"
             break
-        elif selection == '':
+        if selection == '':
             status_message = ""
         else:
             try:
@@ -85,13 +85,13 @@ def compose_mail(state, to_addr=None, encrypt=False):
     if not to_addr:
         to_addr = input("To Address:\t")
     subject = input("Subject:\t")
-    # Start email editor
-    message_body = util.text_editor("Write your Email. Press ENTER three times to send")
-    from_addr = state.address
-    if not encrypt and seecrypto.GPG().public_key_available(to_addr):
+    if seecrypto.GPG().public_key_available(to_addr):
         selection = input("Encrypt (Y/n)\n> ")
         if selection != 'n':
             encrypt = True
+    # Start email editor
+    message_body = util.text_editor("Write your Email. Press ENTER three times to send")
+    from_addr = state.address
     if encrypt:
         message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
         print(f":: {status_message}")
@@ -99,7 +99,6 @@ def compose_mail(state, to_addr=None, encrypt=False):
             return "Message not ecrypted, sending aborted"
     # Create EmailMessage object
     message = state.mailbox.create_message(message_body, from_addr, to_addr, subject)
-    # Send message
     print(":: Sending...")
     success = state.mailbox.send_mail(message)
     if not success:
@@ -169,5 +168,3 @@ def menu(state, status_message) -> (bool, str):
         go = False
 
     return go, status_message
-
-

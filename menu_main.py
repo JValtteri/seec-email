@@ -5,11 +5,16 @@
 # Menu - Main
 # 12. Apr. 2024
 
-import logged_in, logged_out
+import logged_in
+import logged_out
 
-def menu(state, key=b"", status_message=""):
+def menu(state, status_message=""):
+    """
+    Menu top function.
+    Directs which menu module is used
+    """
     go = True
-    while go == True:
+    while go:
         print("\n<<<<< SEEC - Secure Email Client >>>>>\n")
         if state.logged_in:
             try:
@@ -17,7 +22,7 @@ def menu(state, key=b"", status_message=""):
             except:
                 status_message = state.logout()
                 print(f"\n:: {status_message}")
-                raise   # for debug
+                raise
         else:
             go, status_message = logged_out.menu(state, status_message)
     return status_message

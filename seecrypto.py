@@ -29,7 +29,7 @@ class GPG():
     """
 
     def __init__(self, home=None, keyring='seec.pkr'):
-        if home == None:
+        if home is None:
             home = os.path.dirname(os.path.realpath(__file__))
         self.home = home
         self.keyring = keyring
@@ -44,8 +44,8 @@ class GPG():
         - used encoding
         """
         gpg = gnupg.GPG(
-            gnupghome=self.home,      # path/to/home
-            keyring=self.keyring
+            gnupghome=self.home,    # path/to/home
+            keyring=self.keyring    # keyfile
             )
         gpg.encoding = self.encoding
         return gpg
@@ -116,7 +116,7 @@ class GPG():
         """
         Encrypts the [data] with a public key corresponding with [recipient]
         [recipient] is any identifiable information corresponding with a key
-        e.g. an email address.
+        e.g. an email address, name or fingerprint.
         """
         pgp_obj = self.gpg.encrypt(data, recipient, always_trust=True)
         status_message = "Message encrypted"
@@ -142,7 +142,7 @@ class GPG():
         """
         Exports a public key matching a uid, such as an email address
         """
-        # False: Explicitly export only public keys
+        # False = Explicitly export only public keys
         return self.gpg.export_keys(uid, secret=secret, passphrase=passwd)
 
     def list_keys(self, secret=False):
@@ -151,7 +151,7 @@ class GPG():
         """
         return self.gpg.list_keys(secret=secret)
 
-    def delete_key(self, uid, private=False, passwd=''):
+    def delete_key(self, uid, private=False, passwd='') -> None:
         """
         Deletes a key [uid]
         if [private] flag is True, deletes the private key
@@ -206,8 +206,8 @@ def decrypt_bytes(data: bytes, passphrase: bytes) -> bytes:
     f = __init_fernet(passphrase, salt)
     try:
         data = f.decrypt(crypt_data)
-    except InvalidToken:
-        raise WrongKeyError("Wrong password or corrupt data")
+    except InvalidToken as e:
+        raise WrongKeyError("Wrong password or corrupt data") from e
     return data
 
 def encrypt_file_in_place(filename: str, passphrase: str) -> None:

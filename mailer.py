@@ -15,10 +15,11 @@ import email.message
 import datetime
 
 
+class MailboxError(Exception):
+    """Exception raised for errors in imap connection"""
+
 class Mailbox():
-    '''
-    Object for handling mailbox data and connections
-    '''
+    """Object for handling mailbox data and connections"""
 
     def __init__(self, settings):
         self.settings = settings
@@ -27,10 +28,10 @@ class Mailbox():
         self.__inbox = []
 
     def __get_mailbox(self) -> imaplib.IMAP4:
-        '''
+        """
         Authenticate with IMAP server
         Returns an IMAP4 object
-        '''
+        """
         try:
             if not self.settings.get_map["security"]:
                 self.status_message = "Security Error: Insecre IMAP4 not suupported"
@@ -46,18 +47,14 @@ class Mailbox():
             M.select()
             self.status_message = "Logged in to mailbox"
             return M
-        except ConnectionRefusedError:
-            self.status_message = "Error 111: Connection Refused"
-            return None
-        except imaplib.IMAP4.error:
-            self.status_message = "IMAP4 Error: email authentication failed"
-            return None
+        except ConnectionRefusedError as e:
+            raise MailboxError("Error 111: Connection Refused") from e
+        except imaplib.IMAP4.error as e:
+            raise MailboxError("IMAP4 Error: email authentication failed") from e
 
     @staticmethod
     def __parse_message(raw_message) -> email.message.EmailMessage:
-        '''
-        returns a message object from a raw message
-        '''
+        """returns a message object from a raw message"""
         message = email.parser.BytesParser(policy=email.policy.default).parsebytes(
                 raw_message,
                 headersonly=False
@@ -65,9 +62,7 @@ class Mailbox():
         return message
 
     def logout(self) -> str:
-        '''
-        CLose active IMAP server connection
-        '''
+        """Close active IMAP server connection"""
         try:
             self.M.close()
             self.M.logout()
@@ -76,10 +71,8 @@ class Mailbox():
         return "Logged out"
 
     def update_inbox(self) -> str:
-        '''
-        Fetch messages from inbox
-        '''
-        typ, data = self.M.search(None, 'ALL')
+        """Fetch messages from inbox"""
+        _, data = self.M.search(None, 'ALL')
         self.__inbox = []
         for num in data[0].split():
             _, mail = self.M.fetch(num, '(RFC822)')
@@ -88,17 +81,15 @@ class Mailbox():
 
     @property
     def inbox(self) -> [email.message.EmailMessage]:
-        '''
+        """
         Fetch messages from inbox
         returns a list of raw messages
-        '''
+        """
         return self.__inbox
 
     @staticmethod
     def get_message_header(message) -> (str, str, str, str):
-        '''
-        Extracts header fields from a message object
-        '''
+        """Extracts header fields from a message object"""
         date = message.get("Date")
         subject = message.get("Subject")
         from_addr = message.get("From")
@@ -107,22 +98,18 @@ class Mailbox():
 
     @staticmethod
     def get_message_body(msg) -> str:
-        '''
-        Extracts message body from a message object
-        '''
+        """Extracts message body from a message object"""
         body_blob = msg.get_body(preferencelist=('plain','html'))
         if body_blob:
             body = body_blob.get_content()
         return body
 
     @staticmethod
-    def __get_timestamp() -> str:
-        '''
-        Gets the current datetime and formats a standard timestamp
-        '''
-        # Date and Time
-        time_str = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
-        # Time Offset
+    def __time_offset() -> str:
+        """
+        Get current timezone offset in email timestap fortmat
+        e.g. '+0300'
+        """
         timezone = datetime.datetime.now().astimezone()
         timedelta_in_s = timezone.utcoffset().total_seconds()
         timedelta_in_h = int( timedelta_in_s / 3600 * 100 )
@@ -132,13 +119,24 @@ class Mailbox():
             sign = '+'
         abs_delta = str(abs(timedelta_in_h))
         zeros = '0' * ( 4-len(abs_delta) )
-        return f"{time_str} {sign}{zeros}{abs_delta}"
+        return f"{sign}{zeros}{abs_delta}"
 
+    @staticmethod
+    def __get_timestamp() -> str:
+        """
+        Gets the current datetime and formats a standard timestamp
+        """
+        time_str = datetime.datetime.now().strftime('%a, %d %b %Y %H:%M:%S')
+        # Time Offset
+        timedelta = Mailbox.__time_offset()
+        return f"{time_str} {timedelta}"
 
     def create_message(self, message_body, from_addr, to_addr, subject="<no subject>") -> email.message.EmailMessage:
-        '''Creates a EmailMessage object from the input'''
-        # TODO: 'self' not necessary, but I don't want to re-import
-        # the module again just to access this fuction as a static method #
+        """Creates a EmailMessage object from the input"""
+        # 'self' not necessary, but I don't want to re-import
+        # the module again just to access this fuction as a static method
+        #
+        # Useful header fields, not yet supported by SEEC, are commented out
         msg = email.message.EmailMessage()
         msg['Subject'] = subject
         msg['From'] = from_addr
@@ -159,31 +157,19 @@ class Mailbox():
         return msg
 
     def send_mail(self, msg) -> bool:
+        """
+        Sends the message object
+        """
         try:
             smtp_addr = self.settings.get_smtp["addr"]
             smtp_port = self.settings.get_smtp["port"]
-            with smtplib.SMTP(smtp_addr, smtp_port
-                ) as server:
-
+            with smtplib.SMTP(smtp_addr, smtp_port) as server:
                 server.starttls()
                 server.login(
                     self.settings.get_address,
                     self.settings.get_password
                     )
                 server.send_message(msg)
-        except:
-            raise   # TODO DEBUG
+        except Exception:
             return False
         return True
-
-    def print_message(self, index=0) -> None:
-        '''Print the message directly to standard output'''
-        message = Mailbox.get_message(self.inbox[index][0][1])
-        date      = message[0]
-        subject   = message[1]
-        from_addr = message[2]
-        to_addr   = message[3]
-        body      = message[4]
-        print(f"\tFrom:\t{from_addr}\t\t{date}")
-        print(f"Subject:\t{subject}")
-        print(f"{body}".decode("utf-8"))

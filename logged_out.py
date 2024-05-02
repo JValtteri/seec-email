@@ -44,11 +44,13 @@ def new_user() -> str:
     for disclaimer in texts.SECURITY_DISCLAIMERS:
         print(disclaimer.strip())
         input()
-    # Make the PGP key
+
+    # Creates the PGP Key
     status_message, name, passwd = key_utility.make_gpg_key()
-    status_message = f"Password set for: {name}, {status_message}"
-    # (Set and) Encrypt config
+
+    # Encrypts the Config
     seecrypto.encrypt_file_in_place("config.yml", passwd)
+    status_message = f"Password set for: {name}, {status_message}"
     return status_message
 
 def menu(state, status_message) -> (bool, str):

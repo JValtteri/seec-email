@@ -10,8 +10,8 @@ import sys
 import state as s
 import menu_main
 
-
 def main():
+    """SEEC Main program main function"""
     state          = s.ProgramState()
     status_message = menu_main.menu(state)
     print(f"\n:: {status_message}")

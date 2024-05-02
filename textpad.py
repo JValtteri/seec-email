@@ -7,7 +7,9 @@
 ## Class for handling scrollable text in an email.
 ## 19. Mar. 2024
 
-import curses, footer
+import curses
+import footer
+
 
 KEY_UP = 65
 KEY_DOWN = 66
@@ -15,6 +17,9 @@ KEY_Q = [113, 81]
 KEY_D = [100, 68]
 
 class TextPad():
+    """
+    A scrollable text display UI object
+    """
 
     def __init__(self, TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, screen_width, screen_height, len_msg):
         self.pad_top = HEADER_HEIGHT + TITLE_HEIGHT
@@ -27,6 +32,7 @@ class TextPad():
         self.foot = footer.Footer(self.screen_width, self.screen_height)
 
     def show_message(self, msg):
+        """Adds the [msg] text to the element, wrapping it"""
         self.pad.addstr(0, 0, "="*self.pad_width) ## Add start line
         row = self.__print_message(msg)
         self.pad.addstr(row+1, 0, "="*self.pad_width)
@@ -40,6 +46,10 @@ class TextPad():
         return key
 
     def __print_message(self, msg):
+        """
+        Splits text in to rows that fit in the window
+        show_message() uses this for wrapping the text
+        """
         row = 1
         for line in msg:
             line_done = False
@@ -60,6 +70,10 @@ class TextPad():
         return row
 
     def __scroll(self, row):
+        """
+        Gets key presses and translates them in to
+        scroll and other actions.
+        """
         self.pad.refresh(row, 0, self.pad_top, 0, self.pad_height, self.pad_width)
         status = ""
         key = self.pad.getch()
@@ -80,4 +94,3 @@ class TextPad():
         if row >= self.pad_content_length-2:
             status="END"
         return True, row, key, status
-
