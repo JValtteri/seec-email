@@ -159,6 +159,20 @@ class GPG():
         """
         return self.gpg.delete_keys(uid, private, passphrase=passwd)
 
+    def public_key_available(self, uid) -> bool:
+        """
+        Returns True if a public key matching [uid] is found.
+        [uid] can be any identifying data:
+        - Name
+        - Email
+        - Fingerprint
+        - Description
+        """
+        key = self.gpg.export_keys(uid)
+        if key:
+            return True
+        return False
+
 def __init_fernet(passphrase: bytes, salt: bytes) -> Fernet:
     """
     Creates a Fernet object for encrypting and decrypting

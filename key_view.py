@@ -23,15 +23,3 @@ def print_keys(key_list):
               f"Fingerprint: {key['fingerprint']}\n"
         )
     input("Press ENTER to quit\n")
-
-def address_in_keys(addr, key_list) -> bool:
-    """
-    Finds if addr is in key_list
-    """
-    keys = yaml.safe_load(key_list)
-    for key in keys:
-        uid = str(key['uids']).strip("[']").split()
-        address = uid[-1].strip('<>')
-        if address == addr:
-            return True
-    return False

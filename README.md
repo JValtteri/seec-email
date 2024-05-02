@@ -194,14 +194,14 @@ Q = Close - R = Respond [INSECURE]
 There are two ways of sending a message.
 
 1. Opening the address book and selecting the recipient.
-2. Selecting `1` from the menu.
+2. Selecting `2` from the menu.
 	- You can manually enter the address.
 
 If a public key is available for the address, you are prompted to encrypt the message.
 
 ### Address book
 
-Address book allows you to send messages and add new contacts.
+Address book allows you to send messages and add new contacts. You can access it while logged in, by selecting `1`.
 
 ### Key management
 
@@ -214,13 +214,13 @@ From main menu, select import key.
 
 #### Exporting your public key
 
-When logged ind, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email or how ever you want to deliver it.
+When logged in, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email or how ever you want to deliver it.
 
 #### More advanced stuff
 
-The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with a OpenPGP compatible program and perform any number of actions.
+A Key Utility is also provided to you. You can access it from the main menu by selecting `3`, or by running `key_utility.py` directly.
 
-Asuming you have followed the install instructions, you should have `gpg` installed.
+The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with any OpenPGP compatible program. Asuming you have followed the install instructions, you should have `gpg` installed.
 
 Your private key is secured with the password you created when creating your user in SEEC.
 

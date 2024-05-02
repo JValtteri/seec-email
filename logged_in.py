@@ -88,7 +88,10 @@ def compose_mail(state, to_addr=None, encrypt=False):
     # Start email editor
     message_body = util.text_editor("Write your Email. Press ENTER three times to send")
     from_addr = state.address
-    # TODO Encrypt if public key available
+    if not encrypt and seecrypto.GPG().public_key_available(to_addr):
+        selection = input("Encrypt (Y/n)\n> ")
+        if selection != 'n':
+            encrypt = True
     if encrypt:
         message_body, status_message = seecrypto.GPG().encrypt_with_key(message_body, to_addr)
         print(f":: {status_message}")
@@ -116,7 +119,6 @@ def address_book(state) -> str:
     A = contacts.AddressBook()
     status_message = ""
     while True:
-        encrypt = False
         print("Contacts:")
         A.print_contacts()
         print("\nChoose a contact by typing its number")
@@ -136,11 +138,7 @@ def address_book(state) -> str:
             except TypeError:
                 status_message = "Not a number"
             else:
-                if contact['key']:
-                    selection = input("Encrypt (Y/n)\n> ")
-                    if selection != 'n':
-                        encrypt = True
-                status_message = compose_mail(state, contact['addr'], encrypt)
+                status_message = compose_mail(state, contact['addr'])
                 return status_message
 
 def menu(state, status_message) -> (bool, str):
@@ -148,10 +146,9 @@ def menu(state, status_message) -> (bool, str):
     Main menu for logged in user
     """
     go = True
-    login = True
     print("\t0 - Show Inbox")
     print("\t1 - Address Book")
-    print("\t2 - Write Unencrypted Mail")
+    print("\t2 - Write Mail Message")
     print("\t3 - Export public key")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
