@@ -7,7 +7,7 @@
 ## 12. Apr. 2024
 
 import getpass
-import seecrypto, key_utility, help
+import seecrypto, key_utility, texts
 
 
 def login_with(state, passwd) -> str:
@@ -34,14 +34,14 @@ def new_user() -> str:
     """
     print("New User")
     print("IMPORTING CONFIG\n")
-    for warning in help.IMPORT_WARNING:
+    for warning in texts.IMPORT_WARNING:
         print(warning.strip())
         input()
     choise = input("Do you want to proceed?\n(y/N)\n> ")
     if choise not in ['Y', 'y']:
         return "Aborted"
     print("\nNOTE!")
-    for disclaimer in help.SECURITY_DISCLAIMERS:
+    for disclaimer in texts.SECURITY_DISCLAIMERS:
         print(disclaimer.strip())
         input()
     # Make the PGP key
