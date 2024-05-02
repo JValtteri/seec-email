@@ -17,16 +17,19 @@ def make_password(passwd=None):
     Returns (passwd, status_message)
     """
     passwd   = getpass.getpass("       Password: ")
+    if not util.is_valid_input(passwd, 'wide'):
+        return None, "Illegal password"
     passwd_1 = getpass.getpass("Retype Password: ")
     if passwd != passwd_1:
         return None, "Passwords didn't match"
     return passwd, ""
 
-
 def __make_gpg_key(name, passwd) -> str:
     """Generates a new GPG key"""
     gpg            = seecrypto.GPG()
     email          = input("Email address: ")
+    if not util.is_valid_input(email, 'wide'):
+        return "Illegal address field"
     status_message = gpg.generate_key_pair(name, email, password=passwd)
     print("Your Public key:")
     print(gpg.export_key(uid=email))
@@ -35,6 +38,8 @@ def __make_gpg_key(name, passwd) -> str:
 def make_gpg_key() -> str:
     """Interafce to make PGP keys"""
     name = input("           Name: ")
+    if not util.is_valid_input(name, 'wide'):
+        return "Illegal name field"
     passwd, status_message = make_password()
     if not passwd:
         return status_message, '', ''
@@ -68,6 +73,8 @@ def show_key(uid, secret=False, passwd=''):
 def del_key(secret=False):
     """Interface to delete a key"""
     uid = input("Key ID to delete\n> ")
+    if not util.is_valid_input(uid, 'wide'):
+        return "Illegal ID field"
     obj = seecrypto.GPG().delete_key(uid, secret)
     return obj.status
 
@@ -86,6 +93,8 @@ def import_keys():
 def encrypt():
     """Interface to encrypt"""
     addr = input("Email: ")
+    if not util.is_valid_input(addr, 'wide'):
+        return "Illegal address field"
     message_body = util.text_editor("Write your message. Press ENTER three times to send")
     cryptext, status_message = seecrypto.GPG().encrypt_with_key(message_body, addr)
     print(cryptext)
@@ -126,6 +135,8 @@ def menu(status_message='') -> bool:
             list_keys()
         elif selection == "3":
             uid = input("Email or ID: ")
+            if not util.is_valid_input(uid, 'wide'):
+                return True, "Illegal UID"
             status_message = show_key(uid, False)
         elif selection == "4":
             status_message = del_key()
@@ -135,7 +146,11 @@ def menu(status_message='') -> bool:
             list_keys(True)
         elif selection == "3s":
             uid = input("Email or ID: ")
+            if not util.is_valid_input(uid, 'wide'):
+                return True, "Illegal UID"
             passwd = getpass.getpass("Password: ")
+            if not util.is_valid_input(passwd, 'wide'):
+                return True, "Illegal password"
             status_message = show_key(uid, True, passwd)
         elif selection == "4s":
             status_message = del_key(secret=True)

@@ -29,8 +29,8 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 - [x] Asymmetric Encryption
 	- [x] Encrypting messages
 	- [x] Decrypting messages
-- [ ] Input validation
-- [ ] Finalize error handling
+- [x] Input validation
+- [x] Finalize error handling
 
 #### Future development ideas
 

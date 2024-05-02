@@ -28,3 +28,15 @@ def text_editor(prompt, max_empty=2, strip_lines=False) -> str:
     print("="*43)
     return "\n".join(lines)
 
+def is_valid_input(s, length=40, mode='wide'):
+    """
+    Returns true if input complies with the set rules
+    """
+    if len(s) > length:
+        print("Too long")
+        return "", False
+    if not s.isprintable():
+        return "", False
+    if mode == 'anum':
+        return str.isalnum()
+    return s, True

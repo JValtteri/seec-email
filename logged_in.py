@@ -42,6 +42,8 @@ def inbox(state) -> str:
             break
         if selection == '':
             status_message = ""
+        elif not util.is_valid_input(selection, 'anum'):
+            status_message = "Invalid option"
         else:
             try:
                 message = state.mailbox.inbox[int(selection)]
@@ -89,7 +91,11 @@ def compose_mail(state, to_addr=None, encrypt=False):
     # Address
     if not to_addr:
         to_addr = input("To Address:\t")
+        if not util.is_valid_input(to_addr, 'wide'):
+            return "Illegal address field"
     subject = input("Subject:\t")
+    if not util.is_valid_input(subject, 'wide'):
+        return "Illegal subject field"
     if seecrypto.GPG().public_key_available(to_addr):
         selection = input("Encrypt (Y/n)\n> ")
         if selection != 'n':
@@ -110,11 +116,16 @@ def compose_mail(state, to_addr=None, encrypt=False):
         return "Sending failed"
     return "Sent successfully"
 
-def __add_contact(A):
+def __add_contact(A) -> str:
     print("Add Contact")
     name = input("Name: ")
+    if not util.is_valid_input(name, 'wide'):
+        return "Illegal name field"
     address = input("Address: ")
+    if not util.is_valid_input(address, 'wide'):
+        return "Illegal address field"
     A.add_address(name, address)
+    return ''
 
 def address_book(state) -> str:
     """
@@ -133,7 +144,7 @@ def address_book(state) -> str:
         if selection == "":
             status_message = ""
         elif selection == "a":
-            __add_contact(A)
+            status_message =  __add_contact(A)
         elif selection == "q":
             return ""
         else:

@@ -40,7 +40,7 @@ def new_user() -> str:
         print(warning.strip())
         input()
     choise = input("Do you want to proceed?\n(y/N)\n> ")
-    if choise not in ['Y', 'y']:
+    if choise.upper() == 'Y':
         return "Aborted"
     print("\nNOTE!")
     for disclaimer in texts.SECURITY_DISCLAIMERS:
