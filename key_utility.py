@@ -78,9 +78,6 @@ def import_keys():
     key_data = util.text_editor(prompt, strip_lines=True)
     gpg = seecrypto.GPG()
     ret_obj = gpg.import_public_key(key_data)
-    try:
-        print(ret_obj)
-    except: pass
     return ""
 
 def encrypt():

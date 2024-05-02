@@ -160,7 +160,7 @@ def menu(state, status_message) -> (bool, str):
     print("\t1 - Address Book")
     print("\t2 - Write Mail Message")
     print("\t3 - Export public key")
-    print("\tQ - Exit Program")
+    print("\tQ - Log out")
     print(f"\n:: {status_message}")
     selection = input("> ")
     try:
@@ -174,9 +174,10 @@ def menu(state, status_message) -> (bool, str):
             status_message = compose_mail(state)
         elif selection == "3":
             status_message = key_utility.show_key(state.address)
-        elif selection in ["q", "Q"]:
+        elif selection.upper == "Q":
             status_message = state.logout()
-            go = False
     except util.ValidationError as e:
         status_message = e.__str__()
+    except KeyboardInterrupt:
+        status_message = "Ctrl + C was pressed."
     return go, status_message

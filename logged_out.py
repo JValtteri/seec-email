@@ -9,6 +9,7 @@
 import getpass
 import seecrypto
 import key_utility
+import util
 import texts
 
 
@@ -67,20 +68,22 @@ def menu(state, status_message) -> (bool, str):
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
-
-    if selection == "":
-        status_message = ""
-    elif selection in ["q", "Q"]:
-        go = False
-    elif selection == "0":
-        passwd = getpass.getpass("password: ")
-        status_message = login_with(state, passwd)
-    elif selection == "1":
-        status_message = new_user()
-    elif selection == "2":
-        status_message =  key_utility.import_keys()
-    elif selection == "3":
-        key_utility.main()
-    else:
-        status_message = f":: Woops, bad input: '{selection}'"
+    try:
+        if selection == "":
+            status_message = ""
+        elif selection in ["q", "Q"]:
+            go = False
+        elif selection == "0":
+            passwd = util.valid_passwd("password: ")
+            status_message = login_with(state, passwd)
+        elif selection == "1":
+            status_message = new_user()
+        elif selection == "2":
+            status_message =  key_utility.import_keys()
+        elif selection == "3":
+            key_utility.main()
+        else:
+            status_message = f":: Woops, bad input: '{selection}'"
+    except util.ValidationError as e:
+        status_message = e.__str__()
     return go, status_message
