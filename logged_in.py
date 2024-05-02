@@ -27,7 +27,6 @@ def __print_inbox(state):
         print(f"{index}:\t{date}\t\t{subject}\t\t{from_addr}")
         index += 1
 
-
 def inbox(state) -> str:
     """
     Interface for inbox
@@ -90,12 +89,8 @@ def compose_mail(state, to_addr=None, encrypt=False):
     """
     # Address
     if not to_addr:
-        to_addr = input("To Address:\t")
-        if not util.is_valid_input(to_addr, 'wide'):
-            return "Illegal address field"
-    subject = input("Subject:\t")
-    if not util.is_valid_input(subject, 'wide'):
-        return "Illegal subject field"
+        to_addr = util.valid_input("To Address:\t", name='address')
+    subject     = util.valid_input("Subject:\t", name='subject')
     if seecrypto.GPG().public_key_available(to_addr):
         selection = input("Encrypt (Y/n)\n> ")
         if selection != 'n':
@@ -168,19 +163,20 @@ def menu(state, status_message) -> (bool, str):
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")
     selection = input("> ")
-
-    if selection == "":
-        status_message = ""
-    elif selection == "0":
-        status_message = inbox(state)
-    elif selection == "1":
-        status_message = address_book(state)
-    elif selection == "2":
-        status_message = compose_mail(state)
-    elif selection == "3":
-        status_message = key_utility.show_key(state.address)
-    elif selection in ["q", "Q"]:
-        status_message = state.logout()
-        go = False
-
+    try:
+        if selection == "":
+            status_message = ""
+        elif selection == "0":
+            status_message = inbox(state)
+        elif selection == "1":
+            status_message = address_book(state)
+        elif selection == "2":
+            status_message = compose_mail(state)
+        elif selection == "3":
+            status_message = key_utility.show_key(state.address)
+        elif selection in ["q", "Q"]:
+            status_message = state.logout()
+            go = False
+    except util.ValidationError as e:
+        status_message = e.__str__()
     return go, status_message
