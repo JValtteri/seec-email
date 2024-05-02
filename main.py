@@ -23,7 +23,5 @@ if __name__ == "__main__":
         sys.exit(e)
     except KeyboardInterrupt:
         sys.exit("\nCtrl + C was pressed. Terminating")
-    except:
-        print("Error: Program terminated unexpectedly")
-        raise      # TODO DEBUG
+    except Exception:
         sys.exit("Error: Program terminated unexpectedly")

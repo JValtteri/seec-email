@@ -26,12 +26,6 @@ TITLE_HEIGHT  = 1
 HEADER_HEIGHT = 4
 FOOTER_HEIGHT = 1
 
-################## FOR TESTING #################
-import lorem_ipsum
-examplemsg = lorem_ipsum.LOREM_IPSUM.split('\n')
-################## FOR TESTING #################
-
-
 class UI():
     """
     Main UI class
