@@ -6,6 +6,12 @@
 ## General utilities
 ## 2. May. 2024
 
+import getpass
+
+
+class ValidationError(Exception):
+    """Error raised by valid_input() on invalid inputs"""
+
 def text_editor(prompt, max_empty=2, strip_lines=False) -> str:
     """
     A basic input for writing multiline text
@@ -27,4 +33,52 @@ def text_editor(prompt, max_empty=2, strip_lines=False) -> str:
             empty_lines = 0
     print("="*43)
     return "\n".join(lines)
+
+def is_valid_input(s, length=40, mode='wide'):
+    """
+    Returns true if input complies with the set rules
+    """
+    if len(s) > length:
+        print("Too long")
+        return "", False
+    if not s.isprintable():
+        return "", False
+    if mode == 'anum':
+        return str.isalnum()
+    return s, True
+
+def valid_input(prompt, length=40, mode='wide', name=''):
+    """
+    Returns input string if input complies with the set rules
+    otherwise raises a ValidationError
+
+    Use the exception like so:
+    except ValidationError as e:
+        status_message = e.__str__()
+    """
+    s = input(prompt)
+    if len(s) > length:
+        raise ValidationError(f"Too long {name}")
+    if not s.isprintable():
+        raise ValidationError(f"Illegal {name}")
+    if mode == 'anum':
+        if not s.isalnum():
+            raise ValidationError(f"Invalid {name}")
+    return s
+
+def valid_passwd(prompt, length=40):
+    """
+    Returns input password if input complies with the set rules
+    otherwise raises a ValidationError
+
+    Use the exception like so:
+    except ValidationError as e:
+        status_message = e.__str__()
+    """
+    pw = getpass.getpass(prompt)
+    if len(pw) > length:
+        raise ValidationError("Too long password")
+    if not pw.isprintable():
+        raise ValidationError("Illegal password")
+    return pw
 
