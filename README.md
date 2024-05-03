@@ -61,7 +61,7 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 
 #### Technical documentation
 
-- [Security analysis](security.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
+- [Security analysis](security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
 - [AI use Disclosure](ai_use_disclosure.md)
 - [Notes on security](notes_on_security.md)
 
