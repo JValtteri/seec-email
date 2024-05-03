@@ -5,26 +5,76 @@
 A command line email client using end-to-end encryption.
 Created as a course project submission for Tampere University **Secure Programming** [(COMP.SEC.300-2023-2024-1-TAU)](https://moodle.tuni.fi/course/view.php?id=40916 "COMP.SEC.300-2023-2024-1 Secure Programming (Lectures and exercises)") course.
 
+## Index
+
+- [What is SEEC](#what-is-seec)
+	- [Description](#description)
+	- [Note on Security](#note-on-security)
+		- [Disclaimer!](#disclaimer)
+		- [Technical documentation](#technical-documentation)
+- [Features](#features)
+	- [Future development ideas](#future-development-ideas)
+	- [Encryption](#encryption)
+		- [Warning!](#warning)
+- [#Usage](#usage)
+	- [#Setting up](#setting-up)
+		- [1. Download the SEEC project or clone from GitHub**](#1-download-the-seec-project-or-clone-from-github)
+		- [2. Requirements](#2-requirements)
+		- [3. Configure config.yml](#3-configure-configyml)
+		- [Note about email providers support for standard email clients](#note-about-email-providers-support-for-standard-email-clients)
+	- [Running the first time](#running-the-first-time)
+	- [Loggin in](#loggin-in)
+	- [Inbox](#inbox)
+	- [Read message](#read-message)
+	- [Sending messages](#sending-messages)
+	- [Address book](#address-book)
+	- [Key management](#key-management)
+		- [Adding public keys](#adding-public-keys)
+		- [Exporting your public key](#exporting-your-public-key)
+		- [More advanced stuff](#more-advanced-stuff)
+- [Troubleshooting](#troubleshooting)
+
+
+### Description
+
+**SEEC is a light weight, cross platform, CLI email client providing integration with *GNU Privacy Guard*, to offer industry standard *OpenPGP* encryption for all* messages.**
+
+Typically all messages to and from email servers are SSL/TLS encrypted, but the email provider may be able to read the contents of messages on their servers. PGP offers a robust way to implement end-to-end encryption in emails, solving the biggest security issue with emails.
+
+Using PGP is not very easy or convenient. Few email clients offer plugins, much less in built support for PGP. SEEC aims to solve* this.
+
+1) \*Recipients public key needs to be imported, to be able to encrypt messages. SEEC makes importing easy
+2) \*SEEC is not a fully featured email client. More like a proof of concept.
+
+To achieve the maximum of platform independence, SEEC is written in Python 3.7, and runs on the command line. It can be installed on at least
+- Windows (x86)
+- Desktop Linux (x86)
+- Linux (ARM)
+
+In theory it might work on Android devices, with a terminal emulator, but I haven't tested this.
+
 ### Note on Security
 
 #### Disclaimer!
 
-This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Though I've made every effort to follow secure programming best practices, the software has not been audited by a professional entity, so the real world security has not been verified. Also, this client is incredibly bare-bones. You'd likely not get much use of it anyways.
+This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Though I've made every effort to follow OWASP secure programming practices, the software has not been audited by a professional entity. The real world security has not been verified. The client is incredibly bare-bones. It is more like an example project or proof-of-concept, than a practical client for day-to-day emails.
 
 #### Technical documentation
 
-[Threat analysis](security.md)
-
-[AI use Disclosure](ai_use_disclosure.md)
+- [Security analysis](security.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
+- [AI use Disclosure](ai_use_disclosure.md)
+- [Notes on security](notes_on_security.md)
 
 ## Features
 
 - [x] Client log in
 	- [x] Keys stored securely
-	- [x] Encrypting/Decrypting email credintials
+	- [x] Encrypting/Decrypting email credentials
 - [x] SSL connection to SMTP mail server
 - [x] Send and Receive emails
-- [ ] Browse messages without downloading
+- [ ] Limit Memory use on large inboxes
+	- [ ] Browse messages without downloading
+	- [ ] Set a limit on number of messages that can be loaded at once
 - [x] Generating PGP keys pairs
 - [x] Asymmetric Encryption
 	- [x] Encrypting messages
@@ -39,11 +89,11 @@ This software is made as an exercise and comes with NO WARENTY WHAT SO EVER. Tho
 - [ ] Ability to download messages to disk
 - [ ] Ability to send and receive attachments
 
-## Encryption
+### Encryption
 
-For encrypting messages, SEEC uses the [standard asymmetric encryption used by OpenPGP](https://www.gnupg.org/faq/gnupg-faq.html#default_rsa2048), 2048-bit RSA. It ensures compatability with other PGP clients. One day elliptic curve cryptography will become the standard, but it unfortunately, at the time of writing is not.
+For encrypting messages, SEEC uses the [standard asymmetric encryption used by OpenPGP](https://www.gnupg.org/faq/gnupg-faq.html#default_rsa2048), 2048-bit RSA. It ensures compatibility with other PGP clients. One day elliptic curve cryptography will become the standard, but it unfortunately, at the time of writing is not.
 
-For encrypting the configuration file, containing the email server credintials, SEEC uses Python [Fernet](https://cryptography.io/en/latest/fernet/) library, which uses AES-128 in CBC mode.[^1]
+For encrypting the configuration file, containing the email server credentials, SEEC uses Python [Fernet](https://cryptography.io/en/latest/fernet/) library, which uses AES-128 in CBC mode.[^1]
 
 [^1]: https://github.com/pyca/cryptography/blob/main/src/cryptography/fernet.py
 
@@ -55,11 +105,11 @@ Email header info is not encrypted. Do not put sensitive information in the subj
 
 ### Setting up
 
-1. **Download the SEEC project or clone from GitHub**
+#### 1. **Download the SEEC project or clone from GitHub**
 
 `https://github.com/JValtteri/seec-email.git`
 
-2. **Requirements**
+#### 2. **Requirements**
 
  Requirements | version
   ---- | :--:
@@ -70,15 +120,23 @@ cryptography | >= 40.0.1
 
 **Install requirements**
 
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 This program relies on [**GnuPG (gpg)**](https://www.gnupg.org/download/index.html). It is pre-installed on most Linux systems. It is also available for Windows.
 
-3. **Configure config.yml**
+Additionally Windows users need Windows version of `curses`, called `windows-curses`. Install it with the command:
 
-Fill out according to your email providers instruuctions
+```
+pip install windows-curses
+```
+
+#### 3. **Configure config.yml**
+
+Fill out according to your email providers instructions
 SEEC does not support insecure connections. SSL encryption for
-both incominng and outgoing mail must be set to `true`.
+both incoming and outgoing mail must be set to `true`.
 
 ```yaml
 address: email@address.com
@@ -95,9 +153,9 @@ smtp_port: 587
 smtp_security: true
 ```
 
-#### Note abot email providers support for standard email clients
+#### Note about email providers support for standard email clients
 
-Google has [discontinued support](https://support.google.com/mail/answer/7126229?hl=en) for the stabard email authentication method, and instead requires the use of [OAuth 2.0 "Sign in with Google" API](https://developers.google.com/identity/protocols/oauth2). Since this is a not yet a ubiquitous way of authenticating  with email servers, it is outside the main scope of this projec.
+Google has [discontinued support](https://support.google.com/mail/answer/7126229?hl=en) for the standard email authentication method, and instead requires the use of [OAuth 2.0 "Sign in with Google" API](https://developers.google.com/identity/protocols/oauth2). Since this is a not yet a ubiquitous way of authenticating  with email servers, it is outside the main scope of this project.
 
 ### Running the first time
 
@@ -140,8 +198,7 @@ You will be prompted for your password. Password will be stored for the duration
 
 The client will
 - load and decrypt the config in to memory
-- log in to your email server with the credintials defined in the config.yml.
-
+- log in to your email server with the credentials defined in the config.yml.
 
 ### Inbox
 
@@ -203,6 +260,8 @@ If a public key is available for the address, you are prompted to encrypt the me
 
 Address book allows you to send messages and add new contacts. You can access it while logged in, by selecting `1`.
 
+The contacts are stored as an unencrypted YAML file.
+
 ### Key management
 
 #### Adding public keys
@@ -212,32 +271,52 @@ From main menu, select import key.
 1. Select the address the key is for
 2. Copy the key in to the entry field
 
+The key is automatically associated with correct email addresses.
+
 #### Exporting your public key
 
-When logged in, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email or how ever you want to deliver it.
+When logged in, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email, or deliver it another way.
 
 #### More advanced stuff
 
 A Key Utility is also provided to you. You can access it from the main menu by selecting `3`, or by running `key_utility.py` directly.
 
-The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with any OpenPGP compatible program. Asuming you have followed the install instructions, you should have `gpg` installed.
+The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with any OpenPGP compatible program. Assuming you have followed the install instructions, you should have `gpg` installed.
 
 Your private key is secured with the password you created when creating your user in SEEC.
 
 ## Troubleshooting
+
+#### The program crashes at startup
+
+- Make sure all files are present. If necessary, pull missing files from GitHub.
+- Check that **all** [requirements](#2-requirements) are met:
+	- On Windows, make sure you have installed:
+		- `windows-curses`
+		- [GnuPG (gpg)](https://www.gnupg.org/download/index.html)
+	- On Linux, make sure you have [GnuPG (gpg)](https://www.gnupg.org/download/index.html) installed
+
+#### On decrypt, I get an empty message
+
+Decryption has failed. Either the password was incorrect, or the message was encrypted with a wrong key.
 
 #### Unable to generate new key
 
 ##### I deleted the old keyring and now key generation fails
 
 - Reboot. After GPG agent restarts you should be able to create a new keyring.
-- If the problem presists, delete remaining GPG related files. Be sure not to delete `gpg-agent.conf`.
+- If the problem persists, delete remaining GPG related files. Be sure not to delete `gpg-agent.conf`.
 
 ##### I think I deleted `gpg-agent.conf`
 
 - pull from repo to replace missing file(s)
-- or copy manually from github
-- or create a new `gpg-agent.conf` with the following line in it:
-```allow-loopback-pinentry```
+- or copy manually from GitHub
+- or create a new `gpg-agent.conf` with the following line in it: `allow-loopback-pinentry`
+
+#### I lost my password
+
+Nothing can be done.
+
+There is no back door to give you access. Any such feature would be liable to be exploited. Use a password manager to securely store your passwords, so you don't loose them.
 
 [EOF]
