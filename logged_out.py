@@ -83,7 +83,7 @@ def menu(state, status_message) -> (bool, str):
         elif selection == "3":
             key_utility.main()
         else:
-            status_message = f":: Woops, bad input: '{selection}'"
+            status_message = f"Woops, bad input: '{selection}'"
     except util.ValidationError as e:
         status_message = e.__str__()
     return go, status_message

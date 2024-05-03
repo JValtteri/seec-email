@@ -41,7 +41,7 @@ def inbox(state) -> str:
             break
         if selection == '':
             status_message = ""
-        elif not util.is_valid_input(selection, 'anum'):
+        elif not util.is_valid_input(selection, mode='anum'):
             status_message = "Invalid option"
         else:
             try:
@@ -120,10 +120,10 @@ def compose_mail(state, to_addr=None, encrypt=False):
 def __add_contact(A) -> str:
     print("Add Contact")
     name = input("Name: ")
-    if not util.is_valid_input(name, 'wide'):
+    if not util.is_valid_input(name, mode='wide'):
         return "Illegal name field"
     address = input("Address: ")
-    if not util.is_valid_input(address, 'wide'):
+    if not util.is_valid_input(address, mode='wide'):
         return "Illegal address field"
     A.add_address(name, address)
     return ''
@@ -180,8 +180,10 @@ def menu(state, status_message) -> (bool, str):
             status_message = compose_mail(state)
         elif selection == "3":
             status_message = key_utility.show_key(state.address)
-        elif selection.upper == "Q":
+        elif selection.upper() == "Q":
             status_message = state.logout()
+        else:
+            status_message = f"Woops, bad input: '{selection}'"
     except util.ValidationError as e:
         status_message = e.__str__()
     except KeyboardInterrupt:

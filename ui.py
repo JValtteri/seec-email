@@ -99,7 +99,7 @@ class UI():
         """
         pad = textpad.TextPad(
             TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
-            self.screen_width, self.screen_height, len(examplemsg)
+            self.screen_width, self.screen_height, len(msg)
             )
         pad.foot.set_text(note, 2)
         key = pad.show_message(msg)
@@ -115,6 +115,7 @@ def __show_message(scr, message, from_field, to_field, subject, header_note, foo
     ui.show_title()
     ui.show_header(from_field, to_field, subject, header_note)
     key = ui.show_message(message, footer_note)
+    ui.clear_scr()
     return key
 
 def show_message(message="<empty>",
@@ -137,6 +138,3 @@ def show_message(message="<empty>",
         header_note,
         footer_note
         )
-
-if __name__ == "__main__":
-    show_message(examplemsg)

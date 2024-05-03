@@ -44,7 +44,7 @@ def is_valid_input(s, length=40, mode='wide'):
     if not s.isprintable():
         return "", False
     if mode == 'anum':
-        return str.isalnum()
+        return s.isalnum()
     return s, True
 
 def valid_input(prompt, length=40, mode='wide', name=''):

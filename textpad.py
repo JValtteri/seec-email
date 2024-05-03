@@ -27,8 +27,8 @@ class TextPad():
         self.screen_height = screen_height
         self.pad_width = screen_width-1
         self.pad_height = screen_height - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
-        self.pad_content_length = len_msg+1
-        self.pad = curses.newpad(len_msg+1, self.pad_width+1)
+        self.pad_content_length = len_msg+3
+        self.pad = curses.newpad(len_msg+3, self.pad_width+1)
         self.foot = footer.Footer(self.screen_width, self.screen_height)
 
     def show_message(self, msg):
