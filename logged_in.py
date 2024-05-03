@@ -95,6 +95,12 @@ def compose_mail(state, to_addr=None, encrypt=False):
         selection = input("Encrypt (Y/n)\n> ")
         if selection != 'n':
             encrypt = True
+    else:
+        print("Warning\nNo public KEY available for this recipient.")
+        print("This message WILL NOT BE ENCRYPTED.")
+        selection = input("Do you want to send anyway? (Y/n)")
+        if selection.upper == 'N':
+            return "Aborted"
     # Start email editor
     message_body = util.text_editor("Write your Email. Press ENTER three times to send")
     from_addr = state.address
