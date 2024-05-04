@@ -1,24 +1,24 @@
 # SEEC
 
-## What is SEEC
-
 A command line email client using end-to-end encryption.
 Created as a course project submission for Tampere University **Secure Programming** [(COMP.SEC.300-2023-2024-1-TAU)](https://moodle.tuni.fi/course/view.php?id=40916 "COMP.SEC.300-2023-2024-1 Secure Programming (Lectures and exercises)") course.
+
+[AI use Disclosure](ai_use_disclosure.md)
 
 ## Index
 
 - [What is SEEC](#what-is-seec)
-	- [Description](#description)
-	- [Note on Security](#note-on-security)
+	- [Security](#security)
+		- [Security Features](#security-features) 
 		- [Disclaimer!](#disclaimer)
 		- [Technical documentation](#technical-documentation)
 - [Features](#features)
 	- [Future development ideas](#future-development-ideas)
 	- [Encryption](#encryption)
 		- [Warning!](#warning)
-- [#Usage](#usage)
-	- [#Setting up](#setting-up)
-		- [1. Download the SEEC project or clone from GitHub**](#1-download-the-seec-project-or-clone-from-github)
+- [Usage](#usage)
+	- [Setting up](#setting-up)
+		- [1. Download the SEEC project or clone from GitHub](#1-download-the-seec-project-or-clone-from-github)
 		- [2. Requirements](#2-requirements)
 		- [3. Configure config.yml](#3-configure-configyml)
 		- [Note about email providers support for standard email clients](#note-about-email-providers-support-for-standard-email-clients)
@@ -34,17 +34,13 @@ Created as a course project submission for Tampere University **Secure Programmi
 		- [More advanced stuff](#more-advanced-stuff)
 - [Troubleshooting](#troubleshooting)
 
+## What is SEEC
 
-### Description
+**Secure Encrypted Email Client (SEEC) is a light weight, cross platform, CLI email client providing integration with *GNU Privacy Guard*, to offer industry standard *OpenPGP* encryption for all\*¹ messages.**
 
-**SEEC is a light weight, cross platform, CLI email client providing integration with *GNU Privacy Guard*, to offer industry standard *OpenPGP* encryption for all* messages.**
+Typically with all email clients, all messages to-and-from email servers, are SSL/TLS encrypted, but the email provider may be able to read the contents of messages, while on their servers. PGP offers a robust way to implement end-to-end encryption in emails, solving the biggest security issue with emails.
 
-Typically all messages to and from email servers are SSL/TLS encrypted, but the email provider may be able to read the contents of messages on their servers. PGP offers a robust way to implement end-to-end encryption in emails, solving the biggest security issue with emails.
-
-Using PGP is not very easy or convenient. Few email clients offer plugins, much less in built support for PGP. SEEC aims to solve* this.
-
-1) \*Recipients public key needs to be imported, to be able to encrypt messages. SEEC makes importing easy
-2) \*SEEC is not a fully featured email client. More like a proof of concept.
+Using PGP is not very easy or convenient. Few email clients offer plugins, much less in built support for PGP. SEEC aims to solve*² this.
 
 To achieve the maximum of platform independence, SEEC is written in Python 3.7, and runs on the command line. It can be installed on at least
 - Windows (x86)
@@ -53,7 +49,27 @@ To achieve the maximum of platform independence, SEEC is written in Python 3.7, 
 
 In theory it might work on Android devices, with a terminal emulator, but I haven't tested this.
 
-### Note on Security
+##### *Disclaimers*
+
+1) \**Recipients public key needs to be imported, to be able to encrypt messages. SEEC makes importing easy*
+2) \**SEEC is not a fully featured email client. More like a proof of concept.*
+
+### Security
+
+#### Security Features
+
+- Asymmetric encryption for messages (PGP)
+- Private key is encrypted by default
+- Using encryption is the default
+- User is warned before sending unecrypted messages
+- Client will not load dynamic content (text only).
+	- This protects from tracking methods
+	- Prevents malicious code from excecuting
+- Enforces SSL/TLS for communicating with email servers.
+- Input validation
+- Secure error handling
+
+See more in below in [Technical documentation](#technical-documentation)
 
 #### Disclaimer!
 
@@ -62,8 +78,8 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 #### Technical documentation
 
 - [Security analysis](security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
-- [AI use Disclosure](ai_use_disclosure.md)
 - [Notes on security](notes_on_security.md)
+- [AI use Disclosure](ai_use_disclosure.md)
 
 ## Features
 
@@ -73,7 +89,7 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - [x] SSL connection to SMTP mail server
 - [x] Send and Receive emails
 - [ ] Limit Memory use on large inboxes
-	- [ ] Browse messages without downloading
+	- [ ] Browse messages without loading the message bodies
 	- [ ] Set a limit on number of messages that can be loaded at once
 - [x] Generating PGP keys pairs
 - [x] Asymmetric Encryption
@@ -318,5 +334,3 @@ Decryption has failed. Either the password was incorrect, or the message was enc
 Nothing can be done.
 
 There is no back door to give you access. Any such feature would be liable to be exploited. Use a password manager to securely store your passwords, so you don't loose them.
-
-[EOF]
