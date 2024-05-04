@@ -179,7 +179,7 @@ Google has [discontinued support](https://support.google.com/mail/answer/7126229
 
 5. **Create New User**
 
-Select ´1´ from the menu. You will be shown a series of instructions and warnings. Continue by pressing enter.
+Select `1` from the menu. You will be shown a series of instructions and warnings. Continue by pressing enter.
 
 You can abort at any time by pressing `Ctrl+C`.
 
