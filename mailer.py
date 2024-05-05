@@ -74,7 +74,7 @@ class Mailbox():
         """Fetch messages from inbox"""
         _, data = self.M.search(None, 'ALL')
         self.__inbox = []
-        for num in reversed(data[0].split()):
+        for num in reversed(data[0].split()[-100:]):
             _, mail = self.M.fetch(num, '(RFC822)')
             self.__inbox.append(Mailbox.__parse_message(mail[0][1]))
         return "Fetched new messages"

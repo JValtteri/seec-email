@@ -1,6 +1,6 @@
 # SEEC
 
-A command line email client using end-to-end encryption.
+A command line email client using PGP for end-to-end encryption.
 Created as a course project submission for Tampere University **Secure Programming** [(COMP.SEC.300-2023-2024-1-TAU)](https://moodle.tuni.fi/course/view.php?id=40916 "COMP.SEC.300-2023-2024-1 Secure Programming (Lectures and exercises)") course.
 
 [AI use Disclosure](ai_use_disclosure.md)
@@ -9,11 +9,12 @@ Created as a course project submission for Tampere University **Secure Programmi
 
 - [What is SEEC](#what-is-seec)
 	- [Security](#security)
-		- [Security Features](#security-features) 
+		- [Security Features](#security-features)
 		- [Disclaimer!](#disclaimer)
 		- [Technical documentation](#technical-documentation)
 - [Features](#features)
 	- [Future development ideas](#future-development-ideas)
+	- [Known issues](#known-issues)
 	- [Encryption](#encryption)
 		- [Warning!](#warning)
 - [Usage](#usage)
@@ -90,7 +91,7 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - [x] Send and Receive emails
 - [ ] Limit Memory use on large inboxes
 	- [ ] Browse messages without loading the message bodies
-	- [ ] Set a limit on number of messages that can be loaded at once
+	- [x] Set a limit on number of messages that can be loaded at once (Limit is 100)
 - [x] Generating PGP keys pairs
 - [x] Asymmetric Encryption
 	- [x] Encrypting messages
@@ -104,6 +105,13 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - [ ] Better support for use as a library or command line utility
 - [ ] Ability to download messages to disk
 - [ ] Ability to send and receive attachments
+- [ ] Ability scroll the inbox
+- [ ] Ability to search messages
+
+#### Known issues
+
+1. All messages in inbox are marked as 'read', when inbox is viewed
+2. Lacking more advanced optimizations, the maximum supported number of messages in inbox is 100. Older messages are not loaded.
 
 ### Encryption
 
@@ -219,54 +227,22 @@ The client will
 ### Inbox
 
 While logged in, chose `0` to view the inbox.
-To open a message, enter the corresponding number.
+
+Use arrow keys and enter to select a message.
+
 To go back, enter `Q`.
-
-```
-Subject                      Sender                        Date/Time   Secure
--------                      ------                        ---------   ------
-[1] Re: About your health     dr.john@legitdoctors.com     14/02/2024*
-[2] Re: About your health     dr.john@legitdoctors.com     03/12/2023
-[3] How are you?              crazygoose69@yehaa.com       12/10/2023  [INSECURE]
-[4] <No Subject>              maverick@topgun.gov          08/10/2023
-
-<Number>=Open Message  N=New Message
-```
 
 ### Read message
 
 The encryption status is displayed in the top right hand corner. For an encrypted message, pressing `D` will attempt to decrypt the message with your public key.
 
-```
-<No Subject>              maverick@topgun.gov           08/10/2023  [secure]
-----------------------------------------------------------------------------
-Hi!
-
-I seem to have misplaced my F-15. Have you seen it?
-
-Br,
-Maverick
-
------------------------
-Q = Close - R = Respond
-```
-
-3. On unsuccessful decrypt
-```
-How are you?              crazygoose69@yehaa.com        12/10/2023  [INSECURE]
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< INSECURE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Wanna go fishin'?
-
--Ya' mait Bob
------------------------
-Q = Close - R = Respond [INSECURE]
-```
+If the decrypt fails, the output is empty, and a corresponding status message is displayed at the bottom of the screen.
 
 ### Sending messages
 
 There are two ways of sending a message.
 
-1. Opening the address book and selecting the recipient.
+1. Opening the address book, by selecting `1` and selecting the recipient.
 2. Selecting `2` from the menu.
 	- You can manually enter the address.
 
@@ -274,9 +250,9 @@ If a public key is available for the address, you are prompted to encrypt the me
 
 ### Address book
 
-Address book allows you to send messages and add new contacts. You can access it while logged in, by selecting `1`.
+Address book allows you to send messages, and add new contacts. You can access it while logged in, by selecting `1`.
 
-The contacts are stored as an unencrypted YAML file.
+The contacts are stored as an unencrypted `contacts.yml` file.
 
 ### Key management
 
