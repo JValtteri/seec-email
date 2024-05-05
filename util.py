@@ -6,6 +6,7 @@
 ## General utilities
 ## 2. May. 2024
 
+from datetime import datetime
 import getpass
 
 
@@ -33,6 +34,27 @@ def text_editor(prompt, max_empty=2, strip_lines=False) -> str:
             empty_lines = 0
     print("="*43)
     return "\n".join(lines)
+
+def __strip_from_time(time):
+    """
+    Strips the last two digits from a time
+    00:00[:00]
+    """
+    return time.rsplit(':', 1)[0]
+
+def parse_date(date):
+    """
+    Converts verbose email timestamp to compact form
+    """
+    date = date.split('+')[0]
+    date = date.split('-')[0]
+    date_split = date.split(' ', 1)
+    day = date_split[0]
+    date = date_split[1].rsplit(' ', 2)
+    time = __strip_from_time(date[1])
+    parsed_date = datetime.strptime(date[0], "%d %b %Y")
+    formatted_date = parsed_date.strftime("%d.%m.%Y")
+    return f"{day} {formatted_date} {time}"
 
 def is_valid_input(s, length=40, mode='wide'):
     """

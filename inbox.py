@@ -9,6 +9,7 @@
 
 import curses
 import footer
+import util
 
 
 REVERSE = curses.A_REVERSE
@@ -56,6 +57,10 @@ class Inbox():
         column.append(int(col_space))   # Subject
         column.append(int(col_space*2)) # From
         date, subject, addr, _ = self.mailbox.get_message_header(message)
+        try:
+            date = util.parse_date(date)
+        except Exception:
+            pass
         in_focus = row == self.focus_row
         if in_focus:
             style = REVERSE | self.GREEN
@@ -113,4 +118,3 @@ class Inbox():
                 break
             self.refresh()
         return go, row
-
