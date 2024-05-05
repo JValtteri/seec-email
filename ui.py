@@ -110,7 +110,7 @@ class UI():
         return key
 
     def show_inbox(self, mailbox):
-        go, msg_no = inbox.Inbox(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
+        go, msg_no = inbox.Inbox(TITLE_HEIGHT, 1, FOOTER_HEIGHT,
             self.screen_width, self.screen_height, mailbox
             ).main()
         return go, msg_no
