@@ -19,6 +19,8 @@ KEY_DOWN = 66
 ENTER = 10
 KEY_Q = [113, 81]
 
+DATE_LENGTH = 22
+
 class Inbox():
     """
     A key navigatable inbox UI object
@@ -55,7 +57,8 @@ class Inbox():
         column.append(0)                # Index Number
         column.append(int(4))           # Date
         column.append(int(col_space))   # Subject
-        column.append(int(col_space*2)) # From
+        column.append(int(self.pad_width-DATE_LENGTH)) # Date
+
         date, subject, addr, _ = self.mailbox.get_message_header(message)
         try:
             date = util.parse_date(date)
@@ -68,9 +71,9 @@ class Inbox():
         else:
             self.pad.addstr(row, 0, " "*self.pad_width, style)  # Remove inverted background
         self.pad.addstr(row, column[0], str(row),       style)  # Add index
-        self.pad.addstr(row, column[1], str(date),      style)  # Add date
-        self.pad.addstr(row, column[2], str(subject),   style)  # Add subject
-        self.pad.addstr(row, column[3], str(addr),      style)  # Add address
+        self.pad.addstr(row, column[1], str(addr),      style)  # Add address
+        self.pad.addstr(row, column[2], ' '+str(subject),   style)  # Add subject
+        self.pad.addstr(row, column[3], ' '+str(date),      style)  # Add date
 
     def draw_inbox_lines(self):
         """
