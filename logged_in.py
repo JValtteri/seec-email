@@ -33,16 +33,13 @@ def inbox(state) -> str:
     """
     status_message = state.mailbox.update_inbox()
     while True:
-        __print_inbox(state)
+        go, selection = ui.show_inbox(state.mailbox)
         print(":: "+status_message)
-        selection = input("> ")
-        if selection.upper() == 'Q':
+        if not go:
             status_message = "Exit"
             break
         if selection == '':
             status_message = ""
-        elif not util.is_valid_input(selection, mode='anum'):
-            status_message = "Invalid option"
         else:
             try:
                 message = state.mailbox.inbox[int(selection)]

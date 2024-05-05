@@ -10,6 +10,7 @@ import curses
 import textpad
 import footer
 import header
+import inbox
 
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
@@ -37,11 +38,14 @@ class UI():
         curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
         # Define styles
         self.YELLOW = curses.color_pair(1)
         self.WARNING = curses.color_pair(2)
-        self.BLUE = curses.color_pair(2)
+        self.BLUE = curses.color_pair(3)
+        self.GREEN = curses.color_pair(4)
 
         h = curses.LINES
         w = curses.COLS
@@ -105,6 +109,12 @@ class UI():
         key = pad.show_message(msg)
         return key
 
+    def show_inbox(self, mailbox):
+        go, msg_no = inbox.Inbox(TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT,
+            self.screen_width, self.screen_height, mailbox
+            ).main()
+        return go, msg_no
+
 
 def __show_message(scr, message, from_field, to_field, subject, header_note, footer_note=""):
     """
@@ -138,3 +148,17 @@ def show_message(message="<empty>",
         header_note,
         footer_note
         )
+
+def __show_inbox(scr, mailbox):
+    ui  = UI(scr)
+    while True:
+        ui.show_title()
+        go, msg_no = ui.show_inbox(mailbox)
+        ui.clear_scr()
+        return go, msg_no
+
+def show_inbox(mailbox):
+    """
+    Public entrypoint for showing the inbox
+    """
+    return curses.wrapper(__show_inbox, mailbox)
