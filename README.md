@@ -120,6 +120,14 @@ For encrypting messages, SEEC uses the [standard asymmetric encryption used by O
 
 For encrypting the configuration file, containing the email server credentials, SEEC uses Python [Fernet](https://cryptography.io/en/latest/fernet/) library, which uses AES-128 in CBC mode.[^1]
 
+#### Security info
+
+Your passphrase you enter will be used to unlock the email client and the private PGP key.
+
+This program interfaces with an external GPG program to handle PGP encryption. It may be configured by default to remember your passphrase for a few minutes, even if you logged out of SEEC. You can change this in GPG settings.
+
+By default, SEEC does not save any of your messages to disk. This is to protect your privacy.
+
 [^1]: https://github.com/pyca/cryptography/blob/main/src/cryptography/fernet.py
 
 #### Warning!
@@ -184,38 +192,38 @@ Google has [discontinued support](https://support.google.com/mail/answer/7126229
 
 ### Running the first time
 
-4. **Run `main.py`**
+#### 4. **Run `main.py`**
 
-5. **Create New User**
+#### 5. **Run Setup Wizzard for Encryption (optional, but highly recommended)**
 
-Select `1` from the menu. You will be shown a series of instructions and warnings. Continue by pressing enter.
+The config.yml you created in the previous steps will be imported and encrypted with your password. Select `1` from the menu. You will be guided through creating a new password, generating a new key pair and encrypting your config. You will be shown a series of instructions and warnings. Continue by pressing enter. You can abort at any time by pressing `Ctrl+C`.
 
-You can abort at any time by pressing `Ctrl+C`.
+**Warning!** if you lose your password, you will lose access to your configuration file and your private key, and lose access to all your encrypted messages.
 
-**SEEC does not support multiple users**
+SEEC can be used without encryption. If you don't run the Encryption Setup Wizzard, SEEC will use the plain text config file and no keys will be generated. Since there is basically no downside to creating the keys and encrypting your email credintials is good for security, **it is highly recommended**.
 
-**General Info**
+#### 5b. Import old Private Key and Config (Advanced)
 
-You should have created your config.yml. It will be imported and encrypted with your password.
+If you alredy have a key pair you want to use, it is recommended you run the wizzard anyway, and just delete the keys you don't need, before importing your own.
 
-If you lose your password, you will lose access to
-your configuration file and your private key, and
-lose access to all your encrypted messages.
+1. Encrypt your config (optional but highly recommended)
+	- Run the wizzard and set the password same as you have for your old key.
+2. Delete the created keys
+	1. Run to the key utility `3` or `python key_utility.py`.
+	2. List private keys `2s`
+	3. Copy the key fingerprint
+	4. Delete the private key `4s` (paste the fingerprint)
+	5. Delete the public key key `4` (paste the fingerprint)
+3. Import your old keys
+	1. In Key utility select `1`, or in SEEC select `2` to import keys.
+	2. Copy Paste both your private and public key in to the enry field. Make sure there are no more than one consecutive empty line between the keys.
+	3. Finally, press enter a few times to confirm.
 
-Keep your password safe.
+#### 6. Import public keys
 
-**Security info**
+To be able to send encrypted messages, you need the recipients' public keys. You can import them by selecting `2`. Copy paste the key data and press enter a few times.
 
-The passphrase you enter will be used to unlock the
-email client and the private PGP key.
-
-This program uses an external GPG program to handle
-PGP encryption. It may be configured by default to
-remember your passphrase for a few minutes, even if
-you logged out of SEEC.
-
-By default, SEEC does not save any of your messages
-to disk. This is to protect your privacy.
+If you import multiple keys at once, make sure there are no more than one consecutive empty line between them.
 
 ### Loggin in
 

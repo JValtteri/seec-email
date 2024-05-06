@@ -62,8 +62,8 @@ def menu(state, status_message) -> (bool, str):
     """
     go = True
     print("\t0 - Login")
-    print("\t1 - New User")
-    print("\t2 - Import public key")
+    print("\t1 - Encryption Setup Wizzard")
+    print("\t2 - Import key(s)")
     print("\t3 - Key Utilities")
     print("\tQ - Exit Program")
     print(f"\n:: {status_message}")

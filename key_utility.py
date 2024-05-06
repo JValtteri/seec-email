@@ -80,7 +80,7 @@ def import_keys():
               "Ctrl+C to cancel")
     key_data = util.text_editor(prompt, strip_lines=True)
     gpg = seecrypto.GPG()
-    ret_obj = gpg.import_public_key(key_data)
+    gpg.import_public_key(key_data)
     return ""
 
 def encrypt():
@@ -108,9 +108,9 @@ def menu(status_message='') -> bool:
     The main menu of the utility
     """
     print("\t1 - Import keys")
-    print("\t2 - List public keys  \t\t2s - List secret keys")
-    print("\t3 - Export public key \t\t3s - Export secret key")
-    print("\t4 - Delete public key \t\t4s - Delete secret key")
+    print("\t2 - List public keys  \t\t2s - List private keys")
+    print("\t3 - Export public key \t\t3s - Export private key")
+    print("\t4 - Delete public key \t\t4s - Delete private key")
     print("\t5 - Create new key pair")
     print("\n\tE - Encrypt \t\t\t D - Decrypt")
     print("\tQ - Exit")
