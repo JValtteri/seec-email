@@ -11,6 +11,9 @@ import getpass
 import seecrypto, key_view, util
 
 
+class KeyGenerationError(Exception):
+    """Raised when key generation fails"""
+
 def make_password(passwd=None):
     """
     Ask a password twice. Useful for crating a new password
@@ -36,7 +39,7 @@ def make_gpg_key() -> str:
     name = util.valid_input("           Name: ", name='name')
     passwd, status_message = make_password()
     if not passwd:
-        return status_message, '', ''
+        raise KeyGenerationError("Password empty or didn't match")
     # Generate PGP key
     status_message = __make_gpg_key(name, passwd)
     return status_message, name, passwd

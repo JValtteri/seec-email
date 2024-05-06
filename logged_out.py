@@ -41,7 +41,7 @@ def new_user() -> str:
         print(warning.strip())
         input()
     choise = input("Do you want to proceed?\n(y/N)\n> ")
-    if choise.upper() == 'Y':
+    if choise.upper() != 'Y':
         return "Aborted"
     print("\nNOTE!")
     for disclaimer in texts.SECURITY_DISCLAIMERS:
@@ -85,5 +85,7 @@ def menu(state, status_message) -> (bool, str):
         else:
             status_message = f"Woops, bad input: '{selection}'"
     except util.ValidationError as e:
+        status_message = e.__str__()
+    except key_utility.KeyGenerationError as e:
         status_message = e.__str__()
     return go, status_message
