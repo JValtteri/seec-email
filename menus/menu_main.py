@@ -5,8 +5,8 @@
 # Menu - Main
 # 12. Apr. 2024
 
-import logged_in
-import logged_out
+from menus import logged_in
+from menus import logged_out
 
 def menu(state, status_message=""):
     """

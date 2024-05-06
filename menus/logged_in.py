@@ -6,7 +6,7 @@
 ## Menu - Logged in
 ## 12. Apr. 2024
 
-import ui
+from tui import ui
 import contacts
 import seecrypto
 import key_utility

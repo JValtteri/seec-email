@@ -6,7 +6,6 @@
 ## Menu - Logged out
 ## 12. Apr. 2024
 
-import getpass
 import seecrypto
 import key_utility
 import util

@@ -8,7 +8,7 @@
 ## 19. Mar. 2024
 
 import curses
-import footer
+from tui import footer
 import util
 
 

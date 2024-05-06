@@ -7,10 +7,10 @@
 ## 13. Mar. 2024
 
 import curses
-import textpad
-import footer
-import header
-import inbox
+from tui import textpad
+from tui import footer
+from tui import header
+from tui import inbox
 
 
 TITLE = "<<< SEEC - Secure Encrypted Email Client >>>"
