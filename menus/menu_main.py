@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # SEEC - Secure Encrypted Email Client
 # Programming project for Secure Programming course at TUNI
 #
