@@ -35,16 +35,16 @@ class Inbox():
         self.screen_height = screen_height
         self.pad_width = screen_width-1
         self.pad_height = screen_height - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
-        self.pad_content_length = len(mailbox.inbox)+3
+        self.pad_content_length = len(mailbox.inbox)
         self.pad = curses.newpad(len(mailbox.inbox)+3, self.pad_width+1)
         self.foot = footer.Footer(self.screen_width, self.screen_height)
 
         self.focus_row = 0
         self.rows = 0
 
-    def refresh(self):
+    def refresh(self, scrolled=0):
         """Refreshes the inbox view"""
-        self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+        self.pad.refresh(scrolled, 0, self.pad_top, 0, self.pad_height, self.pad_width)
 
     def add_inbox_line(self, message, row):
         """
@@ -58,7 +58,6 @@ class Inbox():
         column.append(int(4))           # Date
         column.append(int(col_space))   # Subject
         column.append(int(self.pad_width-DATE_LENGTH)) # Date
-
         date, subject, addr, _ = self.mailbox.get_message_header(message)
         try:
             date = util.parse_date(date)
@@ -82,15 +81,26 @@ class Inbox():
         max_height = self.pad_height
         index = 0
         for index, message in enumerate(self.mailbox.inbox):
-            if not index < max_height:
-                break
+            #if not index < max_height:     # This would stop drawing lines
+            #    break                      # that are outside the screen
             self.add_inbox_line(message, index)
         self.rows = index
         self.foot.set_text("Inbox - Press Q to Quit", 2)
         self.foot.render()
         self.refresh()
 
-    def __scroll(self, row):
+    def update_inbox_lines(self, row):
+        start = row -1
+        end = row + 1
+        if start < 0:
+            start = 0
+        if end >= self.pad_content_length-1:
+            end = self.pad_content_length-1
+        for i in [start, end, row]:     # <--# Draw highlited row last to have
+            message = self.mailbox.inbox[i]  # the cursor on highlited line
+            self.add_inbox_line(message, i)
+
+    def __scroll(self, row, scrolled):
         """
         Handles user input and movign focus between messages
         """
@@ -99,7 +109,13 @@ class Inbox():
             row -= 1
         elif key == KEY_DOWN and row < self.rows:
             row += 1
-        return row, key
+        if row >= scrolled+self.pad_height-1:
+            scrolled += 1
+        elif row < scrolled:
+            scrolled -= 1
+        self.foot.set_text(f"r{row}, s{scrolled}", 0)
+        self.foot.render()
+        return row, scrolled, key
 
     def main(self):
         """
@@ -107,17 +123,18 @@ class Inbox():
         """
         go = True
         row = self.focus_row
+        scrolled = 0
         self.draw_inbox_lines()
         while True:
-            row, key = self.__scroll(row)
+            row, scrolled, key = self.__scroll(row, scrolled)
             self.focus_row = row
-            self.draw_inbox_lines()
-            if key == ENTER:
+            self.update_inbox_lines(row)    # This updates lines before and after new row
+            if key == ENTER:                # It should also draw missing
                 break
                 # go = True
                 # row = row
             elif key in KEY_Q:
                 go = False
                 break
-            self.refresh()
+            self.refresh(scrolled)
         return go, row
