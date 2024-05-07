@@ -22,12 +22,14 @@ class TextPad():
     """
 
     def __init__(self, TITLE_HEIGHT, HEADER_HEIGHT, FOOTER_HEIGHT, screen_width, screen_height, len_msg):
+        start_and_end_lines = 2                 # Refers to '===' decoration lines
         self.pad_top = HEADER_HEIGHT + TITLE_HEIGHT
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.pad_width = screen_width-1
         self.pad_height = screen_height - HEADER_HEIGHT - TITLE_HEIGHT - FOOTER_HEIGHT
-        self.pad_content_length = len_msg+3
+        self.pad_bottom = screen_height - FOOTER_HEIGHT - 2
+        self.pad_content_length = len_msg + start_and_end_lines
         self.pad = curses.newpad(len_msg+3, self.pad_width+1)
         self.foot = footer.Footer(self.screen_width, self.screen_height)
 
@@ -44,6 +46,10 @@ class TextPad():
             self.foot.show_key(key, status)
             go, row, key, status = self.__scroll(row)
         return key
+
+    def refresh(self, row=0):
+        """Wrapper for curses.pad.refresh"""
+        self.pad.refresh(row, 0, self.pad_top, 0, self.pad_bottom, self.pad_width)
 
     def __print_message(self, msg):
         """
@@ -62,11 +68,11 @@ class TextPad():
                     self.pad.addstr(row, 0, line)
                     line_done = True
                 row += 1
-                self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
-                if row >= self.pad_content_length-2:
-                    self.pad_content_length += 10
+                self.refresh(0)
+                if row >= self.pad_content_length-1:
+                    self.pad_content_length += 2
                     self.pad.resize(self.pad_content_length, self.pad_width)
-                    self.pad.refresh(0, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+                    self.refresh(0)
         return row
 
     def __scroll(self, row):
@@ -74,13 +80,13 @@ class TextPad():
         Gets key presses and translates them in to
         scroll and other actions.
         """
-        self.pad.refresh(row, 0, self.pad_top, 0, self.pad_height, self.pad_width)
+        self.refresh(row)
         status = ""
         key = self.pad.getch()
         if key == KEY_UP and row > 0:
             row -= 1
             status = " UP "
-        elif key == KEY_DOWN and row < self.pad_content_length-1:
+        elif key == KEY_DOWN and row < self.pad_content_length - self.pad_height:
             row += 1
             status = "DOWN"
         elif key in KEY_Q:
@@ -89,8 +95,8 @@ class TextPad():
         elif key in KEY_D:
             status = "DECR"
             return False, row, key, status
-        if row <= 1:
+        if row < 1:
             status = "TOP"
-        if row >= self.pad_content_length-2:
+        if row >= self.pad_content_length - self.pad_height:
             status="END"
         return True, row, key, status

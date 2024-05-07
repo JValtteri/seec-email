@@ -50,10 +50,10 @@ def inbox(state) -> str:
                 if PGB_START in message_lines and PGP_END in message_lines:
                     encrypted = True
                     note = "ENCRYPTED"
-                    status_message = "Press D to decrypt"
+                    status_message = "Press D to decrypt - Q to Quit"
                 else:
                     note = "PLAIN TEXT"
-                    status_message = ""
+                    status_message = "Press Q to Quit"
                 key = ui.show_message(
                     message=message_lines,
                     from_field=fromwho,
