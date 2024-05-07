@@ -27,6 +27,15 @@ TITLE_HEIGHT  = 1
 HEADER_HEIGHT = 4
 FOOTER_HEIGHT = 1
 
+
+class UIException(Exception):
+    """
+    General exception raised by error in rendering
+    Most likely due to resizeing the window
+    """
+    def __init__(self, message="UI Error: Resizeing not supported"):
+        super().__init__(message)
+
 class UI():
     """
     Main UI class
@@ -139,15 +148,18 @@ def show_message(message="<empty>",
     """
     Public entrypoint for showing a message
     """
-    return curses.wrapper(
-        __show_message,
-        message,
-        from_field,
-        to_field,
-        subject,
-        header_note,
-        footer_note
-        )
+    try:
+        return curses.wrapper(
+            __show_message,
+            message,
+            from_field,
+            to_field,
+            subject,
+            header_note,
+            footer_note
+            )
+    except Exception as e:
+        raise UIException() from e
 
 def __show_inbox(scr, mailbox):
     ui  = UI(scr)
@@ -161,4 +173,7 @@ def show_inbox(mailbox):
     """
     Public entrypoint for showing the inbox
     """
-    return curses.wrapper(__show_inbox, mailbox)
+    try:
+        return curses.wrapper(__show_inbox, mailbox)
+    except Exception as e:
+        raise UIException() from e

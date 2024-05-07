@@ -69,8 +69,8 @@ class TextPad():
                     line_done = True
                 row += 1
                 self.refresh(0)
-                if row >= self.pad_content_length-1:
-                    self.pad_content_length += 2
+                if row >= self.pad_content_length-2:
+                    self.pad_content_length += 1
                     self.pad.resize(self.pad_content_length, self.pad_width)
                     self.refresh(0)
         return row

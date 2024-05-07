@@ -183,6 +183,8 @@ def menu(state, status_message) -> (bool, str):
             status_message = f"Woops, bad input: '{selection}'"
     except util.ValidationError as e:
         status_message = e.__str__()
+    except ui.UIException as e:
+        status_message = e.__str__()
     except KeyboardInterrupt:
         status_message = "Ctrl + C was pressed."
     return go, status_message
