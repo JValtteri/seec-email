@@ -3,7 +3,7 @@
 A command line email client using PGP for end-to-end encryption.
 Created as a course project submission for Tampere University **Secure Programming** [(COMP.SEC.300-2023-2024-1-TAU)](https://moodle.tuni.fi/course/view.php?id=40916 "COMP.SEC.300-2023-2024-1 Secure Programming (Lectures and exercises)") course.
 
-[AI use Disclosure](ai_use_disclosure.md)
+- [AI use Disclosure](docs/ai_use_disclosure.md)
 
 ## Index
 
@@ -78,9 +78,9 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 
 #### Technical documentation
 
-- [Security analysis](security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
-- [Notes on security](notes_on_security.md)
-- [AI use Disclosure](ai_use_disclosure.md)
+- [Security analysis](docs/security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
+- [Notes on security](docs/notes_on_security.md)
+- [AI use Disclosure](docs/ai_use_disclosure.md)
 
 ## Features
 
@@ -229,7 +229,7 @@ If you import multiple keys at once, make sure there are no more than one consec
 
 After configuring the client, you can now log in from the menu, by selecting `0`.
 
-![menu](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/menu1.png)
+![menu](docs/doc_pictures/menu1.png)
 
 You will be prompted for your password. Password will be stored for the duration of your session.
 
@@ -243,7 +243,7 @@ While logged in, chose `0` to view the inbox.
 
 Use arrow keys and enter to select a message.
 
-![inbox](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/inbox.png)
+![inbox](docs/doc_pictures/inbox.png)
 
 To go back, enter `Q`.
 
@@ -251,9 +251,9 @@ To go back, enter `Q`.
 
 The encryption status is displayed in the top right hand corner. For an encrypted message, pressing `D` will attempt to decrypt the message with your public key.
 
-![encrypted](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/encrypted.png)
+![encrypted](docs/doc_pictures/encrypted.png)
 
-![decrypted](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/decrypted.png)
+![decrypted](docs/doc_pictures/decrypted.png)
 
 If the decrypt fails, the output is empty, and a corresponding status message is displayed at the bottom of the screen.
 
@@ -261,7 +261,7 @@ If the decrypt fails, the output is empty, and a corresponding status message is
 
 There are two ways of sending a message.
 
-![Menu Logged In](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/menu-in.png)
+![Menu Logged In](docs/doc_pictures/menu-in.png)
 
 1. Opening the address book, by selecting `1` and selecting the recipient.
 2. Selecting `2` from the menu.
@@ -271,7 +271,7 @@ If a public key is available for the address, you are prompted to encrypt the me
 
 ### Address book
 
-![Contacts](https://github.com/JValtteri/seec-email/blob/main/doc_pictures/contacts.png)
+![Contacts](docs/doc_pictures/contacts.png)
 
 Address book allows you to send messages, and add new contacts. You can access it while logged in, by selecting `1`.
 
