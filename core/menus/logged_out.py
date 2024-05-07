@@ -6,10 +6,10 @@
 ## Menu - Logged out
 ## 12. Apr. 2024
 
-import seecrypto
-import key_utility
-import util
-import texts
+from core.crypto import seecrypto
+from core.crypto import key_utility
+from core.utils import util
+from core.utils import texts
 
 
 def login_with(state, passwd) -> str:

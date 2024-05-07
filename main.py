@@ -7,13 +7,13 @@
 ## 12. Mar. 2024
 
 import sys
-import state as s
-import menus.menu_main
+from core import state as s
+from core.menus import menu_main
 
 def main():
     """SEEC Main program main function"""
     state          = s.ProgramState()
-    status_message = menus.menu_main.menu(state)
+    status_message = menu_main.menu(state)
     print(f"\n:: {status_message}")
 
 if __name__ == "__main__":

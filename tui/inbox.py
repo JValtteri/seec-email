@@ -9,7 +9,7 @@
 
 import curses
 from tui import footer
-import util
+from core.utils import util
 
 
 REVERSE = curses.A_REVERSE

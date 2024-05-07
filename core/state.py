@@ -6,9 +6,9 @@
 ## Menu - Main
 ## 12. Apr. 2024
 
-import config
-import mailer
-import seecrypto
+from core import config
+from core import mailer
+from core.crypto import seecrypto
 
 
 class ProgramState():

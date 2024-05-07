@@ -7,10 +7,10 @@
 ## 12. Apr. 2024
 
 from tui import ui
-import contacts
-import seecrypto
-import key_utility
-import util
+from core import contacts
+from core.crypto import seecrypto
+from core.crypto import key_utility
+from core.utils import util
 
 
 PGB_START = "-----BEGIN PGP MESSAGE-----"

@@ -5,8 +5,10 @@
 # Menu - Main
 # 12. Apr. 2024
 
-from menus import logged_in
-from menus import logged_out
+#from menus import logged_out
+
+from core.menus import logged_in
+from core.menus import logged_out
 
 def menu(state, status_message=""):
     """

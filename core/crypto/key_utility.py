@@ -8,7 +8,9 @@
 ## 2. May. 2024
 
 import getpass
-import seecrypto, key_view, util
+from core.crypto import seecrypto
+from core.crypto import key_view
+from core.utils import util
 
 
 class KeyGenerationError(Exception):

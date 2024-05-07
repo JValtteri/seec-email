@@ -7,7 +7,7 @@
 ## 6. Apr. 2024
 
 import yaml
-import seecrypto
+from core.crypto import seecrypto
 
 
 class ConfigurationError(Exception):
