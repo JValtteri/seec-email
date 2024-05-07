@@ -112,7 +112,8 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 #### Known issues
 
 1. All messages in inbox are marked as 'read', when inbox is viewed
-2. Lacking more advanced optimizations, the maximum supported number of messages in inbox is 100. Older messages are not loaded.
+2. Lacking more advanced optimizations, the maximum supported number of messages in inbox is 100 000. Older messages are not loaded.
+3. Resizeing window is not supported
 
 ### Encryption
 
