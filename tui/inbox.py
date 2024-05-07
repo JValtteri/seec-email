@@ -38,9 +38,7 @@ class Inbox():
         self.pad_content_length = len(mailbox.inbox)
         self.pad = curses.newpad(len(mailbox.inbox)+3, self.pad_width+1)
         self.foot = footer.Footer(self.screen_width, self.screen_height)
-
         self.focus_row = 0
-        self.rows = 0
 
     def refresh(self, scrolled=0):
         """Refreshes the inbox view"""
@@ -81,15 +79,19 @@ class Inbox():
         max_height = self.pad_height
         index = 0
         for index, message in enumerate(self.mailbox.inbox):
-            #if not index < max_height:     # This would stop drawing lines
-            #    break                      # that are outside the screen
+            if not index < max_height:     # This stops drawing lines that are outside the screen.
+                break                      # update_inbox_lines() draws the lines on demand.
             self.add_inbox_line(message, index)
-        self.rows = index
         self.foot.set_text("Inbox - Press Q to Quit", 2)
         self.foot.render()
         self.refresh()
 
     def update_inbox_lines(self, row):
+        """
+        This updates lines before and after new row
+        When end of screen is reached, draws the new lines
+        as they are revealed by scrolling.
+        """
         start = row -1
         end = row + 1
         if start < 0:
@@ -107,7 +109,7 @@ class Inbox():
         key = self.pad.getch()
         if key == KEY_UP and row > 0:
             row -= 1
-        elif key == KEY_DOWN and row < self.rows:
+        elif key == KEY_DOWN and row < self.pad_content_length-1:
             row += 1
         if row >= scrolled+self.pad_height-1:
             scrolled += 1
@@ -128,11 +130,9 @@ class Inbox():
         while True:
             row, scrolled, key = self.__scroll(row, scrolled)
             self.focus_row = row
-            self.update_inbox_lines(row)    # This updates lines before and after new row
-            if key == ENTER:                # It should also draw missing
+            self.update_inbox_lines(row)
+            if key == ENTER:
                 break
-                # go = True
-                # row = row
             elif key in KEY_Q:
                 go = False
                 break
