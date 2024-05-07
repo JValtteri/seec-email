@@ -1,6 +1,6 @@
 # Notes on Security
 
-This document expands on some of the security issues and reasoning for the solutions taken.
+**This document expands on some of the security issues and rationale for the chosen solutions.**
 
 ## Attacks where an attacker has either remote or physical write access to the users hard drive.
 
@@ -36,6 +36,16 @@ One way to do this would be to calculate a checksum for all the files, and digit
 This program gives an easy, integrated way of using PGP encryption and email. Nothing significantly sensitive is written to the disk. Mail is handled in memory.
 %%
 
-## Disk
+## Attacks with read access to disk
 
-This program doesn't save any data to disk. All messages are handled in memory. Only sensitive data on disk is the email credentials and the private key. The credentials are encrypted with AES-128 on the first run of SEEC. The private key is encrypted according to OpenPGP standard, by GPG.
+### Nothing saved to disc
+
+You can't attack what doesn't exist. This is why this program doesn't save any data to disk. All messages are handled in memory. Only sensitive data on disk is the email credentials and the private key. The credentials are encrypted with AES-128 on the first run of SEEC. The private key is encrypted according to OpenPGP standard, by GPG.
+
+### AES-128 CBC
+
+While not the primary recommended symmetric encryption algorythm, it is thill on OWASP list as good enough. The library used for config file encryption is `cryptography.fernet`. It is a reputable library, therefore, risk for supply line attack is low.
+
+Fernet supports AES-128 CBC encryption with high level functions that are easy to use securely. If upgrade to AES-256 would be sought, the encryption would need to be implemented manually with cryptography primitives from `cryptography.hazmat` library. This is inharently more risky, because doing this incorrecly can break security completely.
+
+As risk for the config being stolen is low, and AES-128 is still considered *good enough*, an upgrade was not deemed worth the risk.
