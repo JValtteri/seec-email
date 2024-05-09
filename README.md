@@ -82,6 +82,8 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - [Notes on security](docs/notes_on_security.md)
 - [AI use Disclosure](docs/ai_use_disclosure.md)
 
+[Other musings on security related to the project](notes_on_security.md)
+
 ## Features
 
 - [x] Client log in
@@ -151,8 +153,9 @@ Python | >= 3.7
 pyyaml | >= 5.4
 python-gnupg | >= 0.5.2
 cryptography | >= 40.0.1
+windows-curses<br>(on Windows) | >=2.3.2
 
-**Install requirements**
+#### **Install requirements**
 
 ```
 pip install -r requirements.txt
@@ -237,6 +240,11 @@ You will be prompted for your password. Password will be stored for the duration
 The client will
 - load and decrypt the config in to memory
 - log in to your email server with the credentials defined in the config.yml.
+
+---
+
+## Section below is out of date, and represents the original design intent
+
 
 ### Inbox
 
