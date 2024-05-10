@@ -3,18 +3,22 @@
 A command line email client using PGP for end-to-end encryption.
 Created as a course project submission for Tampere University **Secure Programming** [(COMP.SEC.300-2023-2024-1-TAU)](https://moodle.tuni.fi/course/view.php?id=40916 "COMP.SEC.300-2023-2024-1 Secure Programming (Lectures and exercises)") course.
 
-- [AI use Disclosure](docs/ai_use_disclosure.md)
+- [**AI use Disclosure**](docs/ai_use_disclosure.md)
+
+#### Disclaimer!
+
+This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Though I've made every effort to follow OWASP secure programming practices, the software has not been audited by a professional entity. The real world security has not been verified. The client is incredibly bare-bones. It is more like an example project or proof-of-concept, than a practical client for day-to-day emails.
 
 ## Index
 
 - [What is SEEC](#what-is-seec)
-	- [Security](#security)
+	- [Technical documentation](#technical-documentation)
+	- [Features](#features)
 		- [Security Features](#security-features)
-		- [Disclaimer!](#disclaimer)
-		- [Technical documentation](#technical-documentation)
-- [Features](#features)
-	- [Known issues](#known-issues)
+		- [Technical details](#technical-details)
+		- [Known issues](#known-issues)
 	- [Encryption](#encryption)
+		- [Security info](#security-info)
 		- [Warning!](#warning)
 - [Usage](#usage)
 	- [Setting up](#setting-up)
@@ -23,6 +27,11 @@ Created as a course project submission for Tampere University **Secure Programmi
 		- [3. Configure config.yml](#3-configure-configyml)
 		- [Note about email providers support for standard email clients](#note-about-email-providers-support-for-standard-email-clients)
 	- [Running the first time](#running-the-first-time)
+		- [4. Run `main.py`](#run-mainpy)
+		- [5. Run Setup Wizzard for Encryption (optional, but highly recommended)](#5-run-setup-wizzard-for-encryption-optional-but-highly-recommended)
+			- [Using without encryption (not recommended)](#using-without-encryption-not-recommended)
+		- [5b. Import old Private Key and Config (Advanced)](#5b-import-old-private-key-and-config-advanced)
+		- [6. Import public keys](#6-import-public-keys)
 	- [Loggin in](#loggin-in)
 	- [Inbox](#inbox)
 	- [Read message](#read-message)
@@ -54,16 +63,12 @@ In theory it might work on Android devices, with a terminal emulator, but I have
 1) \**Recipients public key needs to be imported, to be able to encrypt messages. SEEC makes importing easy*
 2) \**SEEC is not a fully featured email client. More like a proof of concept.*
 
-#### Disclaimer!
-
-This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Though I've made every effort to follow OWASP secure programming practices, the software has not been audited by a professional entity. The real world security has not been verified. The client is incredibly bare-bones. It is more like an example project or proof-of-concept, than a practical client for day-to-day emails.
-
 #### Technical documentation
 
-- [Security analysis](docs/security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
-- [Notes on security](docs/notes_on_security.md)
-- [AI use Disclosure](docs/ai_use_disclosure.md)
 - [Roadmap](docs/roadmap.md)
+- [Security analysis](docs/security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
+- [Reasoning for Security Choises](docs/notes_on_security.md)
+- [AI use Disclosure](docs/ai_use_disclosure.md)
 
 ### Features
 
@@ -84,7 +89,7 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - Secure error handling
 	- Logs out and clears session and login info in case of an unknown exception
 
-See more in below in [Technical documentation](#technical-documentation)
+See more in [Technical documentation](#technical-documentation)
 
 #### Technical details
 
@@ -94,7 +99,8 @@ See more in below in [Technical documentation](#technical-documentation)
 
 1. All messages in inbox are marked as 'read', when inbox is viewed
 2. Lacking more advanced optimizations, the maximum supported number of messages in inbox is 100 000. Older messages are not loaded.
-3. Resizeing window is not supported
+3. Resizeing window while running is not supported
+4. Sending messages to multiple recipients is not explicitly supported, due to each recipient needing a different key for encryption. Technically plaintext messages are possible to send to multiple recipients, by typing in each recipients address manually.
 
 ### Encryption
 
@@ -183,11 +189,13 @@ The config.yml you created in the previous steps will be imported and encrypted 
 
 **Warning!** if you lose your password, you will lose access to your configuration file and your private key, and lose access to all your encrypted messages.
 
-SEEC can be used without encryption. If you don't run the Encryption Setup Wizzard, SEEC will use the plain text config file and no keys will be generated. Since there is basically no downside to creating the keys and encrypting your email credintials is good for security, **it is highly recommended**.
+##### Using without encryption (not recommended)
+
+Though not recommended, SEEC can be used without encryption. If you don't run the Encryption Setup Wizzard, SEEC will use the plain text config file and no keys will be generated. Since there is basically no downside to creating the keys and encrypting your email credintials is good for security, **and is highly recommended**. You can still import public keys to encrypt your messages, you just won't be able to decrypt any.
 
 #### 5b. Import old Private Key and Config (Advanced)
 
-If you alredy have a key pair you want to use, it is recommended you run the wizzard anyway, and just delete the keys you don't need, before importing your own.
+If you alredy have a key pair you want to use, you need to run the wizzard anyway. The set password must match the passphrase for ther private key. You can delete the extra keys you don't need afterward.
 
 1. Encrypt your config (optional but highly recommended)
 	- Run the wizzard and set the password same as you have for your old key.
@@ -206,7 +214,7 @@ If you alredy have a key pair you want to use, it is recommended you run the wiz
 
 To be able to send encrypted messages, you need the recipients' public keys. You can import them by selecting `2`. Copy paste the key data and press enter a few times.
 
-If you import multiple keys at once, make sure there are no more than one consecutive empty line between them.
+If you import multiple keys at once, make sure there are no more than one consecutive empty line between them. SEEC interprits two or more empty lines to be end of input.
 
 ### Loggin in
 
@@ -219,11 +227,6 @@ You will be prompted for your password. Password will be stored for the duration
 The client will
 - load and decrypt the config in to memory
 - log in to your email server with the credentials defined in the config.yml.
-
----
-
-## Section below is out of date, and represents the original design intent
-
 
 ### Inbox
 
@@ -251,9 +254,8 @@ There are two ways of sending a message.
 
 ![Menu Logged In](docs/doc_pictures/menu-in.png)
 
-1. Opening the address book, by selecting `1` and selecting the recipient.
-2. Selecting `2` from the menu.
-	- You can manually enter the address.
+- A) Opening the address book, by selecting `1` and selecting the recipient by typing it's number.
+- B) Selecting `2` from the menu and manually entering the address.
 
 If a public key is available for the address, you are prompted to encrypt the message.
 
@@ -269,22 +271,20 @@ The contacts are stored as an unencrypted `contacts.yml` file.
 
 #### Adding public keys
 
-From main menu, select import key.
-
-1. Select the address the key is for
-2. Copy the key in to the entry field
+- From main menu, select import key.
+- Copy the key in to the entry field
 
 The key is automatically associated with correct email addresses.
 
 #### Exporting your public key
 
-When logged in, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email, or deliver it another way.
+When logged in, press `3` to export your public key. The key will be printed on screen. You can copy it form there, and paste it to an email, or deliver it another way. Using it others will be able to encrypt messages to you, but only you can open the messages, using your private key.
 
 #### More advanced stuff
 
-A Key Utility is also provided to you. You can access it from the main menu by selecting `3`, or by running `key_utility.py` directly.
+A Key Utility is also provided to you. You can access it from the main menu by selecting `3`, or by running `core/crypto/key_utility.py` directly. It offers more direct access to cryptographic features of SEEC, and supports more actions than the email client itself. It is intended for testing and troubleshooting, but is not explicitly supported.
 
-The keyring file is `seec.pkr`. It is stored in the same folder as the `main.py`. You can access it directly with any OpenPGP compatible program. Assuming you have followed the install instructions, you should have `gpg` installed.
+The keyring file is `seec.pkr`. It is stored in the `seec-email/core/crypto/` folder. You can access it directly with any OpenPGP compatible program. Assuming you have followed the install instructions, you should have `gpg` installed.
 
 Your private key is secured with the password you created when creating your user in SEEC.
 
