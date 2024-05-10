@@ -13,7 +13,6 @@ Created as a course project submission for Tampere University **Secure Programmi
 		- [Disclaimer!](#disclaimer)
 		- [Technical documentation](#technical-documentation)
 - [Features](#features)
-	- [Future development ideas](#future-development-ideas)
 	- [Known issues](#known-issues)
 	- [Encryption](#encryption)
 		- [Warning!](#warning)
@@ -55,23 +54,6 @@ In theory it might work on Android devices, with a terminal emulator, but I have
 1) \**Recipients public key needs to be imported, to be able to encrypt messages. SEEC makes importing easy*
 2) \**SEEC is not a fully featured email client. More like a proof of concept.*
 
-### Security
-
-#### Security Features
-
-- Asymmetric encryption for messages (PGP)
-- Private key is encrypted by default
-- Using encryption is the default
-- User is warned before sending unecrypted messages
-- Client will not load dynamic content (text only).
-	- This protects from tracking methods
-	- Prevents malicious code from excecuting
-- Enforces SSL/TLS for communicating with email servers.
-- Input validation
-- Secure error handling
-
-See more in below in [Technical documentation](#technical-documentation)
-
 #### Disclaimer!
 
 This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Though I've made every effort to follow OWASP secure programming practices, the software has not been audited by a professional entity. The real world security has not been verified. The client is incredibly bare-bones. It is more like an example project or proof-of-concept, than a practical client for day-to-day emails.
@@ -81,35 +63,32 @@ This software is made as an exercise and comes with NO WARRANTY WHAT SO EVER. Th
 - [Security analysis](docs/security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
 - [Notes on security](docs/notes_on_security.md)
 - [AI use Disclosure](docs/ai_use_disclosure.md)
+- [Roadmap](docs/roadmap.md)
 
-[Other musings on security related to the project](notes_on_security.md)
+### Features
 
-## Features
+#### Security Features
 
-- [x] Client log in
-	- [x] Keys stored securely
-	- [x] Encrypting/Decrypting email credentials
-- [x] SSL connection to SMTP mail server
-- [x] Send and Receive emails
-- [ ] Limit Memory use on large inboxes
-	- [ ] Browse messages without loading the message bodies
-	- [x] Set a limit on number of messages that can be loaded at once (Limit is 100)
-- [x] Generating PGP keys pairs
-- [x] Asymmetric Encryption
-	- [x] Encrypting messages
-	- [x] Decrypting messages
-- [x] Input validation
-- [x] Finalize error handling
+- Asymmetric encryption for messages (PGP)
+	- RSA 2048-bit
+- Config containing email credentials is encrypted
+	- AES-128 CBC
+- Private key is encrypted by default
+- Using encryption is the default
+- User is warned before sending unecrypted messages
+- Client will not load dynamic content (text only).
+	- This protects from tracking methods
+	- Prevents malicious code from excecuting
+- Enforces SSL/TLS for communicating with email servers.
+- Input validation
+- Secure error handling
+	- Logs out and clears session and login info in case of an unknown exception
 
-#### Future development ideas
+See more in below in [Technical documentation](#technical-documentation)
 
-- [ ] OAuth support (for logging in to gmail)
-- [ ] Better support for use as a library or command line utility
-- [ ] Ability to download messages to disk
-- [ ] Ability to send and receive attachments
-- [ ] Ability scroll the inbox
-- [ ] Ability to search messages
-- [ ] Support multiple users
+#### Technical details
+
+- Minimum supported character display size: 10 x 60
 
 #### Known issues
 
