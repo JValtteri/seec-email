@@ -66,7 +66,7 @@ In theory it might work on Android devices, with a terminal emulator, but I have
 #### Technical documentation
 
 - [Roadmap](docs/roadmap.md)
-- [Security analysis](docs/security_analysis.md) based on [OWAP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
+- [Security analysis](docs/security_analysis.md) based on [OWASP Secure Coding Practices Checklist](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/02-checklist/05-checklist)
 - [Reasoning for Security Choises](docs/notes_on_security.md)
 - [AI use Disclosure](docs/ai_use_disclosure.md)
 
